@@ -1,18 +1,32 @@
-// Copyright (c) Nicolas Musset. All rights reserved.
-// This file is licensed under the MIT license. 
-// See the LICENSE.md file in the project root for more information.
+// Build Date: 2026/04/15
+// Solution: Markdig.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         AssemblyInfo.cs
+// Author: Kyle L. Crowder
+// Build Num: 184532
+
+
 
 using System.Windows;
 
+
+
 [assembly: ThemeInfo(ResourceDictionaryLocation.SourceAssembly, ResourceDictionaryLocation.SourceAssembly)]
 
-namespace Markdig.Wpf
+
+
+
+namespace MarkdownViewer.Wpf
 {
+
+
     public static partial class Markdown
     {
         /// <summary>
-        /// Version of this library.
+        ///     Version of this library.
         /// </summary>
         public const string Version = "0.4.0";
     }
+
+
 }

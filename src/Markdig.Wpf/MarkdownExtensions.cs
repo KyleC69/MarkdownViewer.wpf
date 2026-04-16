@@ -1,31 +1,40 @@
-// Copyright (c) Nicolas Musset. All rights reserved.
-// This file is licensed under the MIT license.
-// See the LICENSE.md file in the project root for more information.
+// Build Date: 2026/04/15
+// Solution: Markdig.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         MarkdownExtensions.cs
+// Author: Kyle L. Crowder
+// Build Num: 184539
+
+
 
 using System;
 
+using Markdig;
+
+
+
+
 // ReSharper disable once CheckNamespace
-namespace Markdig.Wpf
+namespace MarkdownViewer.Wpf
 {
+
+
     /// <summary>
-    /// Provides extension methods for <see cref="MarkdownPipeline"/> to enable several Markdown extensions.
+    ///     Provides extension methods for <see cref="MarkdownPipeline" /> to enable several Markdown extensions.
     /// </summary>
     public static class MarkdownExtensions
     {
         /// <summary>
-        /// Uses all extensions supported by <c>Markdig.Wpf</c>.
+        ///     Uses all extensions supported by <c>MarkdownViewer.Wpf</c>.
         /// </summary>
         /// <param name="pipeline">The pipeline.</param>
         /// <returns>The modified pipeline</returns>
         public static MarkdownPipelineBuilder UseSupportedExtensions(this MarkdownPipelineBuilder pipeline)
         {
             if (pipeline == null) throw new ArgumentNullException(nameof(pipeline));
-            return pipeline
-                .UseEmphasisExtras()
-                .UseGridTables()
-                .UsePipeTables()
-                .UseTaskLists()
-                .UseAutoLinks();
+            return pipeline.UseEmphasisExtras().UseGridTables().UsePipeTables().UseTaskLists().UseAutoLinks();
         }
     }
+
+
 }

@@ -1,0 +1,44 @@
+﻿<Window x:Class="MarkdownViewerWpf.Sample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:md="clr-namespace:MarkdownViewer.Wpf;assembly=MarkdownViewer.Wpf"
+        mc:Ignorable="d"
+        Title="MarkdownViewer.Wpf Sample"
+        Width="1100"
+        Height="760"
+        MinWidth="900"
+        MinHeight="600"
+        Background="#0F172A"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="16" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Foreground="White"
+                       FontSize="30"
+                       FontWeight="SemiBold"
+                       Text="MarkdownViewer.Wpf" />
+            <TextBlock Margin="0,8,0,0"
+                       Foreground="#CBD5E1"
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       Text="Styled sample content that exercises the built-in markdown renderers." />
+        </StackPanel>
+
+        <Border Grid.Row="2"
+                Background="White"
+                BorderBrush="#334155"
+                BorderThickness="1"
+                CornerRadius="14">
+            <md:MarkdownViewer x:Name="Viewer"
+                               IsToolBarVisible="True"
+                               Zoom="110" />
+        </Border>
+    </Grid>
+</Window>

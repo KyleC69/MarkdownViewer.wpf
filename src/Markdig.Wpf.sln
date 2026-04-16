@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29424.173
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11702.344
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdig.Wpf", "Markdig.Wpf\Markdig.Wpf.csproj", "{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdig.Wpf.SampleApp", "Markdig.Wpf.SampleApp\Markdig.Wpf.SampleApp.csproj", "{1523C4F0-A3E2-4440-9DD2-B3A3190FD2C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdownViewer.Wpf", "Markdig.Wpf\MarkdownViewer.Wpf.csproj", "{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7D346229-503E-49BF-8608-F33F36BC67FA}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,68 +12,74 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\RELEASENOTES.md = ..\RELEASENOTES.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdig.Xaml.ConsoleApp", "Markdig.Xaml.ConsoleApp\Markdig.Xaml.ConsoleApp.csproj", "{559E768F-424B-4E2A-8CBE-756819DE49EC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{8DA306DF-1D05-4E0D-85E8-C966154D6FCD}"
 	ProjectSection(SolutionItems) = preProject
 		..\Documents\Markdig-readme.md = ..\Documents\Markdig-readme.md
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{E93FC46F-EBFB-4177-9D86-7534C4619827}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdig.Xaml.SampleApp", "Markdig.Xaml.SampleApp\Markdig.Xaml.SampleApp.csproj", "{BD4D1C9A-C34F-419B-8A67-66EE79FB9ADA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{76EFE234-7234-4ACE-B007-B88A0620F12B}"
 	ProjectSection(SolutionItems) = preProject
 		..\Documents\img\BenchmarkCPU.png = ..\Documents\img\BenchmarkCPU.png
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdig.Wpf.SampleAppCustomized", "Markdig.Wpf.SampleAppCustomized\Markdig.Wpf.SampleAppCustomized.csproj", "{F98D1138-4D48-4D03-A6F1-2952A86EB846}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownViewer.Wpf.Sample", "MarkdownViewer.Wpf.Sample\MarkdownViewer.Wpf.Sample.csproj", "{A2485AB7-37C0-4668-B85B-A6CA62ED4564}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release_Signed|Any CPU = Release_Signed|Any CPU
+		Release_Signed|x64 = Release_Signed|x64
+		Release_Signed|x86 = Release_Signed|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Debug|x64.Build.0 = Debug|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Debug|x86.Build.0 = Debug|Any CPU
 		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release_Signed|Any CPU.ActiveCfg = Release_Signed|Any CPU
 		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release_Signed|Any CPU.Build.0 = Release_Signed|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release_Signed|x64.ActiveCfg = Release_Signed|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release_Signed|x64.Build.0 = Release_Signed|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release_Signed|x86.ActiveCfg = Release_Signed|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release_Signed|x86.Build.0 = Release_Signed|Any CPU
 		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1523C4F0-A3E2-4440-9DD2-B3A3190FD2C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1523C4F0-A3E2-4440-9DD2-B3A3190FD2C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1523C4F0-A3E2-4440-9DD2-B3A3190FD2C4}.Release_Signed|Any CPU.ActiveCfg = Release|Any CPU
-		{1523C4F0-A3E2-4440-9DD2-B3A3190FD2C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1523C4F0-A3E2-4440-9DD2-B3A3190FD2C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{559E768F-424B-4E2A-8CBE-756819DE49EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{559E768F-424B-4E2A-8CBE-756819DE49EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{559E768F-424B-4E2A-8CBE-756819DE49EC}.Release_Signed|Any CPU.ActiveCfg = Release|Any CPU
-		{559E768F-424B-4E2A-8CBE-756819DE49EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{559E768F-424B-4E2A-8CBE-756819DE49EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD4D1C9A-C34F-419B-8A67-66EE79FB9ADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD4D1C9A-C34F-419B-8A67-66EE79FB9ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD4D1C9A-C34F-419B-8A67-66EE79FB9ADA}.Release_Signed|Any CPU.ActiveCfg = Release|Any CPU
-		{BD4D1C9A-C34F-419B-8A67-66EE79FB9ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD4D1C9A-C34F-419B-8A67-66EE79FB9ADA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F98D1138-4D48-4D03-A6F1-2952A86EB846}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F98D1138-4D48-4D03-A6F1-2952A86EB846}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F98D1138-4D48-4D03-A6F1-2952A86EB846}.Release_Signed|Any CPU.ActiveCfg = Release|Any CPU
-		{F98D1138-4D48-4D03-A6F1-2952A86EB846}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F98D1138-4D48-4D03-A6F1-2952A86EB846}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release|x64.ActiveCfg = Release|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release|x64.Build.0 = Release|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release|x86.ActiveCfg = Release|Any CPU
+		{01E40FB5-B4E9-489D-98D5-4771DDC2D1D7}.Release|x86.Build.0 = Release|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Debug|x64.Build.0 = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Debug|x86.Build.0 = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release_Signed|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release_Signed|Any CPU.Build.0 = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release_Signed|x64.ActiveCfg = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release_Signed|x64.Build.0 = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release_Signed|x86.ActiveCfg = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release_Signed|x86.Build.0 = Debug|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release|x64.ActiveCfg = Release|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release|x64.Build.0 = Release|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release|x86.ActiveCfg = Release|Any CPU
+		{A2485AB7-37C0-4668-B85B-A6CA62ED4564}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{1523C4F0-A3E2-4440-9DD2-B3A3190FD2C4} = {E93FC46F-EBFB-4177-9D86-7534C4619827}
-		{559E768F-424B-4E2A-8CBE-756819DE49EC} = {E93FC46F-EBFB-4177-9D86-7534C4619827}
 		{8DA306DF-1D05-4E0D-85E8-C966154D6FCD} = {7D346229-503E-49BF-8608-F33F36BC67FA}
-		{BD4D1C9A-C34F-419B-8A67-66EE79FB9ADA} = {E93FC46F-EBFB-4177-9D86-7534C4619827}
 		{76EFE234-7234-4ACE-B007-B88A0620F12B} = {8DA306DF-1D05-4E0D-85E8-C966154D6FCD}
-		{F98D1138-4D48-4D03-A6F1-2952A86EB846} = {E93FC46F-EBFB-4177-9D86-7534C4619827}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17465081-057C-4230-8347-D812E99F4B12}
