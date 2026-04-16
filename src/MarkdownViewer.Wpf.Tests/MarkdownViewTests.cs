@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -49,7 +49,7 @@ public sealed class MarkdownViewTests
 
         MarkdownView view = new()
         {
-            Theme = theme,
+            ThemeResources = theme,
             Markdown = "Paragraph",
         };
 

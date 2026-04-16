@@ -47,7 +47,7 @@ internal static class RenderHelpers
 
         if (!string.IsNullOrWhiteSpace(styleKey))
         {
-            TryApplyStyle(panel, context.Theme, styleKey);
+            ApplyRole(panel, styleKey);
         }
 
         foreach (Markdig.Syntax.Block child in container)
@@ -65,30 +65,16 @@ internal static class RenderHelpers
             TextWrapping = TextWrapping.Wrap,
         };
 
-        TryApplyStyle(textBlock, context.Theme, styleKey);
+        ApplyRole(textBlock, styleKey);
         return textBlock;
     }
 
-    public static void TryApplyStyle(FrameworkElement element, ITheme theme, string key)
+    public static void ApplyRole(DependencyObject dependencyObject, string role)
     {
-        ArgumentNullException.ThrowIfNull(element);
-        ArgumentNullException.ThrowIfNull(theme);
+        ArgumentNullException.ThrowIfNull(dependencyObject);
+        ArgumentException.ThrowIfNullOrWhiteSpace(role);
 
-        if (theme.GetStyle(key) is Style style)
-        {
-            element.Style = style;
-        }
-    }
-
-    public static void TryApplyStyle(TextElement element, ITheme theme, string key)
-    {
-        ArgumentNullException.ThrowIfNull(element);
-        ArgumentNullException.ThrowIfNull(theme);
-
-        if (theme.GetStyle(key) is Style style)
-        {
-            element.Style = style;
-        }
+        MarkdownTheming.SetRole(dependencyObject, role);
     }
 
     public static string GetLiteral(LeafBlock block)
@@ -96,19 +82,19 @@ internal static class RenderHelpers
         return string.Join(Environment.NewLine, block.Lines.Lines.Take(block.Lines.Count).Select(line => line.Slice.ToString()));
     }
 
-    public static Border CreateDebugLabel(string text, ITheme theme)
+    public static Border CreateDebugLabel(string text, ResourceDictionary resources)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(text);
-        ArgumentNullException.ThrowIfNull(theme);
+        ArgumentNullException.ThrowIfNull(resources);
 
         Border border = new();
-        TryApplyStyle(border, theme, ThemeKeys.DiagnosticsLabelBorderStyle);
+        ApplyRole(border, ThemeKeys.DiagnosticsLabelBorderStyle);
 
         TextBlock textBlock = new()
         {
             Text = text,
         };
-        TryApplyStyle(textBlock, theme, ThemeKeys.DiagnosticsLabelTextStyle);
+        ApplyRole(textBlock, ThemeKeys.DiagnosticsLabelTextStyle);
         border.Child = textBlock;
         return border;
     }

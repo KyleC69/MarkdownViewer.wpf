@@ -51,7 +51,7 @@ internal static class HtmlWpfRenderer
         {
             Orientation = Orientation.Vertical,
         };
-        RenderHelpers.TryApplyStyle(panel, context.Theme, ThemeKeys.RootPanelStyle);
+        RenderHelpers.ApplyRole(panel, ThemeKeys.RootPanelStyle);
 
         foreach (UIElement element in elements)
         {
@@ -150,7 +150,7 @@ internal static class HtmlWpfRenderer
     private static UIElement CreateBlockQuote(HtmlNode node, IRenderContext context)
     {
         Border border = new();
-        RenderHelpers.TryApplyStyle(border, context.Theme, ThemeKeys.BlockQuoteBorderStyle);
+        RenderHelpers.ApplyRole(border, ThemeKeys.BlockQuoteBorderStyle);
         border.Child = CreateStackPanel(node.ChildNodes, context);
         return border;
     }
@@ -181,7 +181,6 @@ internal static class HtmlWpfRenderer
     private static UIElement CreateImage(HtmlNode node, IRenderContext context)
     {
         Image image = new();
-        RenderHelpers.TryApplyStyle(image, context.Theme, ThemeKeys.ImageStyle);
 
         string source = node.GetAttributeValue("src", string.Empty);
         if (Uri.TryCreate(source, UriKind.RelativeOrAbsolute, out Uri? uri))
@@ -189,7 +188,7 @@ internal static class HtmlWpfRenderer
             image.Source = MarkdownIntegrationServices.ResolveImageSource(uri, context);
         }
 
-        string? alternateText = node.GetAttributeValue("alt", null);
+        string alternateText = node.GetAttributeValue("alt", string.Empty);
         if (!string.IsNullOrWhiteSpace(alternateText))
         {
             image.ToolTip = alternateText;
@@ -212,7 +211,7 @@ internal static class HtmlWpfRenderer
         {
             Orientation = Orientation.Vertical,
         };
-        RenderHelpers.TryApplyStyle(panel, context.Theme, ThemeKeys.ListStyle);
+        RenderHelpers.ApplyRole(panel, ThemeKeys.ListStyle);
 
         int orderedStart = Math.Max(1, listNode.GetAttributeValue("start", 1));
         int index = 0;
@@ -244,7 +243,7 @@ internal static class HtmlWpfRenderer
     private static Grid CreateTable(HtmlNode tableNode, IRenderContext context)
     {
         Grid grid = new();
-        RenderHelpers.TryApplyStyle(grid, context.Theme, ThemeKeys.TableStyle);
+        RenderHelpers.ApplyRole(grid, ThemeKeys.TableStyle);
 
         List<HtmlNode> rows = tableNode.Descendants().Where(static node => string.Equals(node.Name, "tr", StringComparison.OrdinalIgnoreCase)).ToList();
         int columnCount = rows.Count == 0
@@ -266,7 +265,7 @@ internal static class HtmlWpfRenderer
             {
                 Border border = new();
                 bool isHeader = string.Equals(cell.Name, "th", StringComparison.OrdinalIgnoreCase);
-                RenderHelpers.TryApplyStyle(border, context.Theme, isHeader ? ThemeKeys.TableHeaderCellBorderStyle : ThemeKeys.TableCellBorderStyle);
+                RenderHelpers.ApplyRole(border, isHeader ? ThemeKeys.TableHeaderCellBorderStyle : ThemeKeys.TableCellBorderStyle);
                 border.Child = HasBlockChildren(cell)
                     ? CreateStackPanel(cell.ChildNodes, context)
                     : CreateTextBlock(cell.ChildNodes, context, ThemeKeys.ParagraphStyle);
@@ -301,7 +300,7 @@ internal static class HtmlWpfRenderer
             Height = 1,
             HorizontalAlignment = HorizontalAlignment.Stretch,
         };
-        RenderHelpers.TryApplyStyle(border, context.Theme, ThemeKeys.ThematicBreakStyle);
+        RenderHelpers.ApplyRole(border, ThemeKeys.ThematicBreakStyle);
         return border;
     }
 
@@ -375,7 +374,7 @@ internal static class HtmlWpfRenderer
                 yield break;
             case "code":
                 Run codeRun = new(HtmlEntity.DeEntitize(node.InnerText));
-                RenderHelpers.TryApplyStyle(codeRun, context.Theme, ThemeKeys.CodeInlineStyle);
+                RenderHelpers.ApplyRole(codeRun, ThemeKeys.CodeInlineStyle);
                 yield return codeRun;
                 yield break;
             case "mark":
@@ -411,7 +410,6 @@ internal static class HtmlWpfRenderer
     private static Hyperlink CreateHyperlink(HtmlNode node, IRenderContext context)
     {
         Hyperlink hyperlink = new();
-        RenderHelpers.TryApplyStyle(hyperlink, context.Theme, ThemeKeys.HyperlinkStyle);
         foreach (System.Windows.Documents.Inline inline in RenderInlineNodes(node.ChildNodes, context))
         {
             hyperlink.Inlines.Add(inline);
@@ -423,7 +421,7 @@ internal static class HtmlWpfRenderer
             MarkdownIntegrationServices.ConfigureHyperlink(hyperlink, uri, context);
         }
 
-        string? title = node.GetAttributeValue("title", null);
+        string title = node.GetAttributeValue("title", string.Empty);
         if (!string.IsNullOrWhiteSpace(title))
         {
             hyperlink.ToolTip = title;
@@ -447,7 +445,7 @@ internal static class HtmlWpfRenderer
     private static Span CreateStyledSpan(HtmlNode node, IRenderContext context, string styleKey)
     {
         Span span = new();
-        RenderHelpers.TryApplyStyle(span, context.Theme, styleKey);
+        RenderHelpers.ApplyRole(span, styleKey);
         foreach (System.Windows.Documents.Inline inline in RenderInlineNodes(node.ChildNodes, context))
         {
             span.Inlines.Add(inline);

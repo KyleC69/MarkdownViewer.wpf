@@ -48,7 +48,7 @@ internal static class MarkdownTestHelper
         theme ??= new DefaultTheme();
         services ??= EmptyServiceProvider.Instance;
 
-        return Assert.IsType<StackPanel>(engine.Render(markdown, theme, services));
+        return Assert.IsType<StackPanel>(engine.Render(markdown, services, ThemeResourceAdapter.Resolve(theme)));
     }
 
     public static MarkdownDocument Parse(string markdown)

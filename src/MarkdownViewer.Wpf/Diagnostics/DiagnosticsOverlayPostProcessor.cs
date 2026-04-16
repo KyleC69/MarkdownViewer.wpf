@@ -31,10 +31,29 @@ public sealed class DiagnosticsOverlayPostProcessor : IPostProcessor
 
         if (element is Border border)
         {
-            border.BorderBrush ??= context.Theme.GetBrush(ThemeKeys.DiagnosticsOverlayBorderBrush) ?? Brushes.OrangeRed;
-            border.BorderThickness = border.BorderThickness == default
-                ? context.Theme.GetThickness(ThemeKeys.DiagnosticsOverlayBorderThickness) ?? new Thickness(1)
-                : border.BorderThickness;
+            if (border.BorderBrush is null)
+            {
+                if (WpfResourceLookup.TryFindResource(context.Resources, ThemeKeys.DiagnosticsOverlayBorderBrush) is Brush)
+                {
+                    border.SetResourceReference(Border.BorderBrushProperty, ThemeKeys.DiagnosticsOverlayBorderBrush);
+                }
+                else
+                {
+                    border.BorderBrush = Brushes.OrangeRed;
+                }
+            }
+
+            if (border.BorderThickness == default)
+            {
+                if (WpfResourceLookup.TryFindResource(context.Resources, ThemeKeys.DiagnosticsOverlayBorderThickness) is Thickness)
+                {
+                    border.SetResourceReference(Border.BorderThicknessProperty, ThemeKeys.DiagnosticsOverlayBorderThickness);
+                }
+                else
+                {
+                    border.BorderThickness = new Thickness(1);
+                }
+            }
 
             ApplyLabel(border, context);
         }
@@ -75,7 +94,7 @@ public sealed class DiagnosticsOverlayPostProcessor : IPostProcessor
         border.Child = null;
         overlay.Children.Add(child);
 
-        Border label = RenderHelpers.CreateDebugLabel(child.GetType().Name, context.Theme);
+        Border label = RenderHelpers.CreateDebugLabel(child.GetType().Name, context.Resources);
         label.Tag = OverlayLabelTag;
         label.HorizontalAlignment = HorizontalAlignment.Left;
         label.VerticalAlignment = VerticalAlignment.Top;

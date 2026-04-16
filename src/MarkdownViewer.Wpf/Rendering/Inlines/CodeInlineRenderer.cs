@@ -15,7 +15,7 @@ public sealed class CodeInlineRenderer : IInlineRenderer<CodeInline>
         ArgumentNullException.ThrowIfNull(context);
 
         Run run = new(inline.Content);
-        RenderHelpers.TryApplyStyle(run, context.Theme, ThemeKeys.CodeInlineStyle);
+        RenderHelpers.ApplyRole(run, ThemeKeys.CodeInlineStyle);
         return run;
     }
 }

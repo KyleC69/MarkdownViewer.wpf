@@ -41,7 +41,8 @@ MarkdownView (WPF control)
 ```csharp
 public interface IRenderContext
 {
-    ITheme Theme { get; }
+    ResourceDictionary ThemeResources { get; }
+    ResourceDictionary Resources { get; }
     IServiceProvider Services { get; }
 
     UIElement RenderBlock(Block block);
@@ -53,7 +54,7 @@ public interface IRenderContext
 
 **Responsibilities:**
 
-- Provide access to theme and services.
+- Provide access to theme resources and services.
 - Dispatch rendering of nested nodes.
 - Collect post‑processors to run after tree construction.
 
@@ -166,53 +167,29 @@ public sealed class RendererDispatcher
 
 ### 6.1. Theme abstraction
 
-```csharp
-public interface ITheme
-{
-    Style? GetStyle(string key);
-    Brush? GetBrush(string key);
-    Thickness? GetThickness(string key);
-    double? GetFontSize(string key);
-}
-```
+The library uses true WPF theming with plain `ResourceDictionary` instances, implicit target-type styles, inherited property values, and attached-property triggers for markdown-specific semantics.
 
-**Notes:**
+Generated controls are not themed by direct property assignment or renderer-owned style lookups. Instead:
 
-- Theme is a read‑only facade over one or more `ResourceDictionary` instances.
-- Missing keys are allowed but should be traceable (diagnostics).
-
-### 6.2. Theme keys (examples)
-
-- **Typography:**
-  - `Heading1Style`, `Heading2Style`, `Heading3Style`
-  - `ParagraphStyle`
-  - `CodeInlineStyle`
-- **Colors/brushes:**
-  - `CodeBlockBackground`
-  - `CodeBlockBorderBrush`
-  - `LinkForeground`
-  - `BlockQuoteBorderBrush`
-- **Layout:**
-  - `BlockQuoteMargin`
-  - `ListItemIndent`
-  - `CodeBlockPadding`
+- Generic appearance flows from standard WPF implicit styles and inherited properties.
+- Markdown-specific semantics are exposed through `MarkdownTheming.Role`.
+- Consumers can provide any dictionary shape they want, as long as their styles target the generated control types and optional semantic roles.
 
 ### 6.3. Theme implementations
 
-- `DefaultTheme` (GitHub‑like).
-- `DarkTheme`.
-- `LightTheme`.
-- `CompositeTheme` (wraps multiple dictionaries, e.g., base + app overrides).
+- Built-in theme dictionaries live in:
+    - `Themes/DefaultTheme.xaml`
+    - `Themes/DarkTheme.xaml`
+    - `Themes/LightTheme.xaml`
+- Consumers can merge those dictionaries with app-specific overrides or ignore them entirely and rely on their own WPF resources.
 
 ### 6.4. Usage pattern
 
-Renderers **never** hard‑code visual properties; they always query `ITheme`:
+Renderers **never** hard-code visual properties. They attach semantic roles and let WPF resource resolution do the rest:
 
 ```csharp
-var style = context.Theme.GetStyle("ParagraphStyle");
 var textBlock = new TextBlock { TextWrapping = TextWrapping.Wrap };
-if (style != null)
-    textBlock.Style = style;
+MarkdownTheming.SetRole(textBlock, ThemeKeys.ParagraphStyle);
 ```
 
 ---
@@ -279,7 +256,7 @@ public sealed class MarkdownRendererBuilder
 public class MarkdownView : Control
 {
     public static readonly DependencyProperty MarkdownProperty;
-    public static readonly DependencyProperty ThemeProperty;
+    public static readonly DependencyProperty ThemeResourcesProperty;
     public static readonly DependencyProperty ServicesProperty;
 
     public string? Markdown
@@ -288,10 +265,10 @@ public class MarkdownView : Control
         set => SetValue(MarkdownProperty, value);
     }
 
-    public ITheme? Theme
+    public ResourceDictionary? ThemeResources
     {
-        get => (ITheme?)GetValue(ThemeProperty);
-        set => SetValue(ThemeProperty, value);
+        get => (ResourceDictionary?)GetValue(ThemeResourcesProperty);
+        set => SetValue(ThemeResourcesProperty, value);
     }
 
     public IServiceProvider? Services
@@ -340,7 +317,7 @@ public sealed class MarkdownEngine
 {
     public MarkdownEngine(MarkdownPipeline pipeline, RendererDispatcher dispatcher);
 
-    public UIElement Render(string markdown, ITheme theme, IServiceProvider services);
+    public UIElement Render(string markdown, IServiceProvider services, ResourceDictionary? themeResources = null);
 }
 ```
 
@@ -391,8 +368,9 @@ MarkdownViewer.Wpf/
       HtmlInlineRenderer.cs
 
   Theming/
-    ITheme.cs
-    ResourceDictionaryTheme.cs
+        MarkdownTheming.cs
+        ThemeKeys.cs
+        WpfResourceLookup.cs
     DefaultTheme.xaml
     DarkTheme.xaml
     LightTheme.xaml

@@ -1,12 +1,12 @@
 # MarkdownViewer.Wpf
 
-`MarkdownViewer.Wpf` is a WPF control for rendering Markdown into a native `UIElement` tree. It uses `Markdig` for parsing and applies WPF styles and brushes through a theme abstraction, making it suitable for live previews, embedded documentation panes, and markdown-driven desktop UI.
+`MarkdownViewer.Wpf` is a WPF control for rendering Markdown into a native `UIElement` tree. It uses `Markdig` for parsing and applies WPF styles, brushes, and merged resource dictionaries through the normal WPF theming model, making it suitable for live previews, embedded documentation panes, and markdown-driven desktop UI.
 
 ## Features
 
 - Native WPF `MarkdownView` control
 - Deterministic rendering to WPF visual elements instead of a browser surface
-- Built-in themes: `DefaultTheme`, `LightTheme`, and `DarkTheme`
+- Built-in theme resource dictionaries for default, light, and dark presentations
 - Support for common markdown elements, including:
   - headings and paragraphs
   - bold, italic, strikethrough, subscript, superscript, inserted, marked, and inline code
@@ -61,26 +61,50 @@ You can also set the markdown directly:
 
 ## Theming
 
-The control exposes a `Theme` property. Built-in options are available from `MarkdownViewer.Wpf.Theming`.
+The control exposes a `ThemeResources` property that accepts a WPF `ResourceDictionary`. Built-in theme dictionaries are available from the library XAML resources.
+
+If `ThemeResources` is not set, the rendered tree uses the normal WPF resource lookup chain and inherits styles from the surrounding control tree and application resources. The library does not inject a fallback theme automatically.
 
 ```xml
 <markdown:MarkdownView
     Markdown="{Binding MarkdownText}"
-    Theme="{Binding CurrentTheme}"
+    ThemeResources="{Binding CurrentThemeResources}"
     Padding="20" />
 ```
 
 Example view-model property:
 
 ```csharp
-using MarkdownViewer.Wpf.Theming;
+using System.Windows;
 
-public ITheme CurrentTheme => IsDarkModeEnabled
-    ? new DarkTheme()
-    : new DefaultTheme();
+public ResourceDictionary CurrentThemeResources => new()
+{
+    Source = new Uri(
+        IsDarkModeEnabled
+            ? "/MarkdownViewer.Wpf;component/Themes/DarkTheme.xaml"
+            : "/MarkdownViewer.Wpf;component/Themes/DefaultTheme.xaml",
+        UriKind.Relative)
+};
 ```
 
-If needed, custom themes can be created by implementing `ITheme`, by deriving from `ResourceDictionaryTheme`, or by composing multiple themes with `CompositeTheme`.
+You can also merge resources directly on the control or at the application level:
+
+```xml
+<markdown:MarkdownView Markdown="{Binding MarkdownText}" Padding="20">
+    <markdown:MarkdownView.ThemeResources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/MarkdownViewer.Wpf;component/Themes/DefaultTheme.xaml" />
+                <ResourceDictionary Source="Themes/MarkdownOverrides.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </markdown:MarkdownView.ThemeResources>
+</markdown:MarkdownView>
+```
+
+The renderer now relies on normal WPF implicit styling for generated elements. For markdown-specific semantics that share the same target type, such as paragraphs versus headings or regular borders versus block quotes, the renderer annotates elements with the attached property `MarkdownViewer.Wpf.Theming.MarkdownTheming.Role`. A custom dictionary can react to those semantics with standard WPF triggers while still allowing broad type-based styling to flow naturally.
+
+Examples of semantic roles include `Heading1Style`, `BlockQuoteBorderStyle`, `CodeBlockBorderStyle`, `TableHeaderCellBorderStyle`, and `MarkedStyle`.
 
 ## Services and integration points
 

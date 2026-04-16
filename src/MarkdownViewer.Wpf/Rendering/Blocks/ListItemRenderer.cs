@@ -27,20 +27,20 @@ public sealed class ListItemRenderer : IBlockRenderer<ListItemBlock>
         Grid grid = new();
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        RenderHelpers.TryApplyStyle(grid, context.Theme, ThemeKeys.ListItemContainerStyle);
+        RenderHelpers.ApplyRole(grid, ThemeKeys.ListItemContainerStyle);
 
         TextBlock marker = new()
         {
             Text = markerText,
         };
-        RenderHelpers.TryApplyStyle(marker, context.Theme, ThemeKeys.ListItemMarkerStyle);
+        RenderHelpers.ApplyRole(marker, ThemeKeys.ListItemMarkerStyle);
         Grid.SetColumn(marker, 0);
 
         StackPanel content = new()
         {
             Orientation = Orientation.Vertical,
         };
-        RenderHelpers.TryApplyStyle(content, context.Theme, ThemeKeys.ListItemContentStyle);
+        RenderHelpers.ApplyRole(content, ThemeKeys.ListItemContentStyle);
         foreach (UIElement element in contentElements)
         {
             content.Children.Add(element);

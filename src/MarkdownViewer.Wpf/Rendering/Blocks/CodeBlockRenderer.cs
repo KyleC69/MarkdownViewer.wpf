@@ -27,7 +27,7 @@ public class CodeBlockRenderer : IBlockRenderer<CodeBlock>
     internal static Border CreateCodeBlock(string code, IRenderContext context, string? language)
     {
         Border border = new();
-        RenderHelpers.TryApplyStyle(border, context.Theme, ThemeKeys.CodeBlockBorderStyle);
+        RenderHelpers.ApplyRole(border, ThemeKeys.CodeBlockBorderStyle);
 
         Grid grid = new();
         if (!string.IsNullOrWhiteSpace(language))
@@ -43,14 +43,14 @@ public class CodeBlockRenderer : IBlockRenderer<CodeBlock>
             {
                 LastChildFill = false,
             };
-            RenderHelpers.TryApplyStyle(header, context.Theme, ThemeKeys.CodeBlockHeaderPanelStyle);
+            RenderHelpers.ApplyRole(header, ThemeKeys.CodeBlockHeaderPanelStyle);
 
             TextBlock headerText = new()
             {
                 Text = language,
                 VerticalAlignment = VerticalAlignment.Center,
             };
-            RenderHelpers.TryApplyStyle(headerText, context.Theme, ThemeKeys.CodeBlockHeaderTextStyle);
+            RenderHelpers.ApplyRole(headerText, ThemeKeys.CodeBlockHeaderTextStyle);
             DockPanel.SetDock(headerText, Dock.Left);
 
             Button copyButton = new()
@@ -59,7 +59,7 @@ public class CodeBlockRenderer : IBlockRenderer<CodeBlock>
                 HorizontalAlignment = HorizontalAlignment.Right,
                 Tag = code,
             };
-            RenderHelpers.TryApplyStyle(copyButton, context.Theme, ThemeKeys.CodeBlockCopyButtonStyle);
+            RenderHelpers.ApplyRole(copyButton, ThemeKeys.CodeBlockCopyButtonStyle);
             copyButton.Click += static (_, args) =>
             {
                 if (args.Source is Button button && button.Tag is string text)
@@ -80,7 +80,7 @@ public class CodeBlockRenderer : IBlockRenderer<CodeBlock>
             Text = code,
             TextWrapping = TextWrapping.NoWrap,
         };
-        RenderHelpers.TryApplyStyle(textBlock, context.Theme, ThemeKeys.CodeBlockTextStyle);
+        RenderHelpers.ApplyRole(textBlock, ThemeKeys.CodeBlockTextStyle);
 
         ScrollViewer scrollViewer = new()
         {
@@ -88,7 +88,7 @@ public class CodeBlockRenderer : IBlockRenderer<CodeBlock>
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
         };
-        RenderHelpers.TryApplyStyle(scrollViewer, context.Theme, ThemeKeys.CodeBlockScrollViewerStyle);
+        RenderHelpers.ApplyRole(scrollViewer, ThemeKeys.CodeBlockScrollViewerStyle);
         Grid.SetRow(scrollViewer, string.IsNullOrWhiteSpace(language) ? 0 : 1);
         grid.Children.Add(scrollViewer);
 

@@ -16,7 +16,7 @@ public sealed class MarkdownEngineTests
     {
         MarkdownEngine engine = MarkdownEngine.CreateDefault();
 
-        UIElement root = engine.Render("# Title\n\nParagraph text", new DefaultTheme(), EmptyServiceProvider.Instance);
+        UIElement root = engine.Render("# Title\n\nParagraph text", EmptyServiceProvider.Instance, new DefaultTheme());
 
         StackPanel panel = Assert.IsType<StackPanel>(root);
         Assert.Equal(2, panel.Children.Count);
@@ -36,7 +36,7 @@ public sealed class MarkdownEngineTests
             .AddPostProcessor(postProcessor);
         MarkdownEngine engine = new(MarkdownEngine.CreateDefaultPipeline(), builder.BuildDispatcher(), builder.BuildPostProcessors());
 
-        UIElement root = engine.Render("Paragraph text", new DefaultTheme(), EmptyServiceProvider.Instance);
+        UIElement root = engine.Render("Paragraph text", EmptyServiceProvider.Instance, new DefaultTheme());
 
         Assert.True(postProcessor.WasCalled);
         Assert.Same(root, postProcessor.Root);

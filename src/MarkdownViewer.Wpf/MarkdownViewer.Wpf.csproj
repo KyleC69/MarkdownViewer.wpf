@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>MarkdownViewer.Wpf</AssemblyName>
     <RootNamespace>MarkdownViewer.Wpf</RootNamespace>
@@ -9,19 +9,54 @@
     <LangVersion>latest</LangVersion>
     <AnalysisLevel>latest</AnalysisLevel>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <Version>6.0.0</Version>
+    <Version>1.0.0</Version>
     <Authors>Kyle L. Crowder</Authors>
     <Description>Deterministic Markdown rendering for WPF using a UIElement tree.</Description>
     <PackageId>MarkdownViewer.Wpf</PackageId>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/KyleC69/MarkdownViewer.Wpf</RepositoryUrl>
     <PackageProjectUrl>https://github.com/KyleC69/MarkdownViewer.Wpf</PackageProjectUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>markdown markdig wpf ui</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Markdown Viewer for WPF</Title>
+    <Copyright>Kyle L. Crowder</Copyright>
+    <PackageIcon>app-icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <NeutralLanguage>en</NeutralLanguage>
+	  <ReleaseCopyOutputDir>F:\Packages</ReleaseCopyOutputDir>
+	  <PackOutputFolder>\MarkdownViewer.Wpf\bin\Debug</PackOutputFolder>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
-    <PackageReference Include="Markdig" Version="0.37.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
+    <PackageReference Include="Markdig" Version="1.1.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Assets\app-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+
+	<Target Name="CopyBuildOutputToReleases" AfterTargets="Pack">
+		<ItemGroup>
+			<BuildOutputFiles Include="$(PackOutputFolder)*" />
+		</ItemGroup>
+
+		<MakeDir Directories="$(ReleaseCopyOutputDir)" />
+		<Copy SourceFiles="@(BuildOutputFiles)" DestinationFiles="@(BuildOutputFiles-&gt;'$(ReleaseCopyOutputDir))" SkipUnchangedFiles="false" />
+		<Message Text="Package output copied to $(ReleaseCopyOutputDir)" Importance="High" />
+	</Target>
+
+
+
 </Project>

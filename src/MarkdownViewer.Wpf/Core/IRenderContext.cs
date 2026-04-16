@@ -1,13 +1,13 @@
 using System.Windows;
 using System.Windows.Documents;
 
-using MarkdownViewer.Wpf.Theming;
-
 namespace MarkdownViewer.Wpf.Core;
 
 public interface IRenderContext
 {
-    ITheme Theme { get; }
+    ResourceDictionary Resources { get; }
+
+    ResourceDictionary ThemeResources { get; }
 
     IServiceProvider Services { get; }
 

@@ -18,6 +18,6 @@ public sealed class LoggingPostProcessor : IPostProcessor
         ArgumentNullException.ThrowIfNull(root);
         ArgumentNullException.ThrowIfNull(context);
 
-        log($"Markdown render completed. Root element: {root.GetType().Name}, theme: {context.Theme.GetType().Name}.");
+        log($"Markdown render completed. Root element: {root.GetType().Name}, theme resources: {context.ThemeResources.GetType().Name}.");
     }
 }

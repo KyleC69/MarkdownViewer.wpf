@@ -1,15 +1,14 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf;
 
 public class MarkdownView : Control
 {
+    private ResourceDictionary? appliedThemeResources;
     private static readonly DependencyPropertyKey RenderedContentPropertyKey = DependencyProperty.RegisterReadOnly(
         nameof(RenderedContent),
         typeof(UIElement),
@@ -26,11 +25,11 @@ public class MarkdownView : Control
         typeof(MarkdownView),
         new PropertyMetadata(null, OnRefreshPropertyChanged));
 
-    public static readonly DependencyProperty ThemeProperty = DependencyProperty.Register(
-        nameof(Theme),
-        typeof(ITheme),
+    public static readonly DependencyProperty ThemeResourcesProperty = DependencyProperty.Register(
+        nameof(ThemeResources),
+        typeof(ResourceDictionary),
         typeof(MarkdownView),
-        new PropertyMetadata(new DefaultTheme(), OnRefreshPropertyChanged));
+        new PropertyMetadata(null, OnRefreshPropertyChanged));
 
     public static readonly DependencyProperty ServicesProperty = DependencyProperty.Register(
         nameof(Services),
@@ -45,16 +44,21 @@ public class MarkdownView : Control
         DefaultStyleKeyProperty.OverrideMetadata(typeof(MarkdownView), new FrameworkPropertyMetadata(typeof(MarkdownView)));
     }
 
+    public MarkdownView()
+    {
+        EnsureThemeResources();
+    }
+
     public string? Markdown
     {
         get => (string?)GetValue(MarkdownProperty);
         set => SetValue(MarkdownProperty, value);
     }
 
-    public ITheme? Theme
+    public ResourceDictionary? ThemeResources
     {
-        get => (ITheme?)GetValue(ThemeProperty);
-        set => SetValue(ThemeProperty, value);
+        get => (ResourceDictionary?)GetValue(ThemeResourcesProperty);
+        set => SetValue(ThemeResourcesProperty, value);
     }
 
     public IServiceProvider? Services
@@ -88,8 +92,7 @@ public class MarkdownView : Control
     internal void RefreshContent()
     {
         refreshPending = false;
-
-        ApplyThemeSurface(Theme ?? new DefaultTheme());
+        EnsureThemeResources();
 
         if (string.IsNullOrWhiteSpace(Markdown))
         {
@@ -99,27 +102,26 @@ public class MarkdownView : Control
 
         RenderedContent = DefaultEngine.Render(
             Markdown,
-            Theme ?? new DefaultTheme(),
-            Services ?? EmptyServiceProvider.Instance);
+            Services ?? EmptyServiceProvider.Instance,
+            ResolveThemeResources());
     }
 
-    private void ApplyThemeSurface(ITheme theme)
+    private void EnsureThemeResources()
     {
-        ArgumentNullException.ThrowIfNull(theme);
-
-        if (theme.GetBrush(ThemeKeys.ViewerBackgroundBrush) is Brush background)
+        if (appliedThemeResources is not null)
         {
-            SetCurrentValue(BackgroundProperty, background);
+            Resources.MergedDictionaries.Remove(appliedThemeResources);
         }
 
-        if (theme.GetBrush(ThemeKeys.ViewerBorderBrush) is Brush borderBrush)
+        appliedThemeResources = ResolveThemeResources();
+        if (appliedThemeResources is not null)
         {
-            SetCurrentValue(BorderBrushProperty, borderBrush);
+            Resources.MergedDictionaries.Add(appliedThemeResources);
         }
+    }
 
-        if (theme.GetThickness(ThemeKeys.ViewerBorderThickness) is Thickness borderThickness)
-        {
-            SetCurrentValue(BorderThicknessProperty, borderThickness);
-        }
+    private ResourceDictionary? ResolveThemeResources()
+    {
+        return ThemeResources;
     }
 }

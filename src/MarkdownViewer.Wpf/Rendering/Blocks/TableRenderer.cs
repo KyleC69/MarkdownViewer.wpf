@@ -16,7 +16,7 @@ public sealed class TableRenderer : IBlockRenderer<Table>
         ArgumentNullException.ThrowIfNull(context);
 
         Grid grid = new();
-        RenderHelpers.TryApplyStyle(grid, context.Theme, ThemeKeys.TableStyle);
+        RenderHelpers.ApplyRole(grid, ThemeKeys.TableStyle);
 
         int columnCount = table.ColumnDefinitions.Count;
         if (columnCount == 0)
@@ -39,7 +39,7 @@ public sealed class TableRenderer : IBlockRenderer<Table>
             {
                 TableCell cell = (TableCell)row[cellIndex];
                 Border border = new();
-                RenderHelpers.TryApplyStyle(border, context.Theme, row.IsHeader ? ThemeKeys.TableHeaderCellBorderStyle : ThemeKeys.TableCellBorderStyle);
+                RenderHelpers.ApplyRole(border, row.IsHeader ? ThemeKeys.TableHeaderCellBorderStyle : ThemeKeys.TableCellBorderStyle);
                 border.Child = RenderHelpers.RenderChildBlocks(cell, context);
                 Grid.SetRow(border, rowIndex);
                 Grid.SetColumn(border, Math.Min(cellIndex, Math.Max(0, columnCount - 1)));

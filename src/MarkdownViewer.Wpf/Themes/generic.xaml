@@ -2,9 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:MarkdownViewer.Wpf">
     <Style TargetType="{x:Type controls:MarkdownView}">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Padding" Value="12" />
         <Setter Property="Template">
             <Setter.Value>

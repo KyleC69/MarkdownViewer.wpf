@@ -1,191 +1,240 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:MarkdownViewer.Wpf"
+                    xmlns:theming="clr-namespace:MarkdownViewer.Wpf.Theming">
     <SolidColorBrush x:Key="ViewerBackgroundBrush" Color="#FF0D1422" />
     <SolidColorBrush x:Key="ViewerBorderBrush" Color="#FF23344E" />
     <Thickness x:Key="ViewerBorderThickness">1</Thickness>
 
-    <Style TargetType="StackPanel" x:Key="RootPanelStyle">
-        <Setter Property="Margin" Value="0" />
+    <Style TargetType="{x:Type controls:MarkdownView}">
+        <Setter Property="Background" Value="#FF0D1422" />
+        <Setter Property="BorderBrush" Value="#FF23344E" />
+        <Setter Property="BorderThickness" Value="1" />
     </Style>
 
-    <Style TargetType="TextBlock" x:Key="ParagraphStyle">
+    <Style TargetType="TextBlock">
         <Setter Property="Margin" Value="0,0,0,12" />
         <Setter Property="Foreground" Value="#E8EEF9" />
         <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="LineHeight" Value="21" />
-    </Style>
-
-    <Style TargetType="TextBlock" x:Key="Heading1Style" BasedOn="{StaticResource ParagraphStyle}">
-        <Setter Property="FontSize" Value="30" />
-        <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="Margin" Value="0,8,0,16" />
-    </Style>
-    <Style TargetType="TextBlock" x:Key="Heading2Style" BasedOn="{StaticResource ParagraphStyle}">
-        <Setter Property="FontSize" Value="24" />
-        <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="Margin" Value="0,8,0,14" />
-    </Style>
-    <Style TargetType="TextBlock" x:Key="Heading3Style" BasedOn="{StaticResource ParagraphStyle}">
-        <Setter Property="FontSize" Value="20" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Margin" Value="0,6,0,12" />
-    </Style>
-    <Style TargetType="TextBlock" x:Key="Heading4Style" BasedOn="{StaticResource ParagraphStyle}">
-        <Setter Property="FontSize" Value="18" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Margin" Value="0,6,0,10" />
-    </Style>
-    <Style TargetType="TextBlock" x:Key="Heading5Style" BasedOn="{StaticResource ParagraphStyle}">
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-    </Style>
-    <Style TargetType="TextBlock" x:Key="Heading6Style" BasedOn="{StaticResource ParagraphStyle}">
-        <Setter Property="FontSize" Value="15" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-    </Style>
-
-    <Style TargetType="StackPanel" x:Key="ListStyle">
-        <Setter Property="Margin" Value="0,0,0,12" />
-    </Style>
-    <Style TargetType="Grid" x:Key="ListItemContainerStyle">
-        <Setter Property="Margin" Value="0,0,0,6" />
-    </Style>
-    <Style TargetType="TextBlock" x:Key="ListItemMarkerStyle" BasedOn="{StaticResource ParagraphStyle}">
-        <Setter Property="Foreground" Value="#9BC2FF" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Margin" Value="0,0,10,0" />
-        <Setter Property="VerticalAlignment" Value="Top" />
-    </Style>
-    <Style TargetType="StackPanel" x:Key="ListItemContentStyle">
-        <Setter Property="Margin" Value="0" />
-    </Style>
-
-    <Style TargetType="Border" x:Key="BlockQuoteBorderStyle">
-        <Setter Property="BorderBrush" Value="#FF5D86CA" />
-        <Setter Property="BorderThickness" Value="4,0,0,0" />
-        <Setter Property="Padding" Value="16,6,12,6" />
-        <Setter Property="Margin" Value="0,0,0,12" />
-        <Setter Property="Background" Value="#FF172335" />
-        <Setter Property="CornerRadius" Value="0,10,10,0" />
-    </Style>
-
-    <Style TargetType="Border" x:Key="CodeBlockBorderStyle">
-        <Setter Property="Background" Value="#FF08111D" />
-        <Setter Property="BorderBrush" Value="#FF324865" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="12" />
-        <Setter Property="Padding" Value="12" />
-        <Setter Property="Margin" Value="0,0,0,12" />
-    </Style>
-    <Style TargetType="DockPanel" x:Key="CodeBlockHeaderPanelStyle">
-        <Setter Property="Margin" Value="0,0,0,10" />
-        <Setter Property="LastChildFill" Value="False" />
-    </Style>
-    <Style TargetType="TextBlock" x:Key="CodeBlockHeaderTextStyle">
-        <Setter Property="Foreground" Value="#FF9DC2FF" />
-        <Setter Property="FontFamily" Value="Consolas" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-    </Style>
-    <Style TargetType="TextBlock" x:Key="CodeBlockTextStyle">
-        <Setter Property="Foreground" Value="#F5F7FF" />
-        <Setter Property="FontFamily" Value="Consolas" />
-        <Setter Property="FontSize" Value="13" />
-    </Style>
-    <Style TargetType="Button" x:Key="CodeBlockCopyButtonStyle">
-        <Setter Property="Padding" Value="12,5" />
-        <Setter Property="Margin" Value="8,0,0,0" />
-        <Setter Property="Background" Value="#FF2A518F" />
-        <Setter Property="BorderBrush" Value="#FF4F79BA" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Foreground" Value="#FFFFFF" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="FontWeight" Value="SemiBold" />
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#FF3567B5" />
+            <Trigger Property="theming:MarkdownTheming.Role" Value="Heading1Style">
+                <Setter Property="FontSize" Value="30" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Margin" Value="0,8,0,16" />
             </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#FF1C3A67" />
+            <Trigger Property="theming:MarkdownTheming.Role" Value="Heading2Style">
+                <Setter Property="FontSize" Value="24" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Margin" Value="0,8,0,14" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="Heading3Style">
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Margin" Value="0,6,0,12" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="Heading4Style">
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Margin" Value="0,6,0,10" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="Heading5Style">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="Heading6Style">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="ListItemMarkerStyle">
+                <Setter Property="Foreground" Value="#9BC2FF" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Margin" Value="0,0,10,0" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="CodeBlockHeaderTextStyle">
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Foreground" Value="#FF9DC2FF" />
+                <Setter Property="FontFamily" Value="Consolas" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="CodeBlockTextStyle">
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Foreground" Value="#F5F7FF" />
+                <Setter Property="FontFamily" Value="Consolas" />
+                <Setter Property="FontSize" Value="13" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="HtmlBlockStyle">
+                <Setter Property="FontFamily" Value="Consolas" />
+                <Setter Property="Background" Value="#FF162338" />
+                <Setter Property="Padding" Value="10" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="DiagnosticsLabelTextStyle">
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="#FFF5E7B2" />
             </Trigger>
         </Style.Triggers>
     </Style>
-    <Style TargetType="ScrollViewer" x:Key="CodeBlockScrollViewerStyle">
-        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
-        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
-        <Setter Property="Background" Value="Transparent" />
-    </Style>
-    <Style TargetType="Run" x:Key="CodeInlineStyle">
-        <Setter Property="Background" Value="#FF22314C" />
-        <Setter Property="Foreground" Value="#F5F7FF" />
-        <Setter Property="FontFamily" Value="Consolas" />
+
+    <Style TargetType="StackPanel">
+        <Setter Property="Margin" Value="0" />
+        <Style.Triggers>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="ListStyle">
+                <Setter Property="Margin" Value="0,0,0,12" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
-    <Style TargetType="Hyperlink" x:Key="HyperlinkStyle">
+    <Style TargetType="Grid">
+        <Style.Triggers>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="ListItemContainerStyle">
+                <Setter Property="Margin" Value="0,0,0,6" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="TableStyle">
+                <Setter Property="Margin" Value="0,0,0,12" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Border">
+        <Style.Triggers>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="BlockQuoteBorderStyle">
+                <Setter Property="BorderBrush" Value="#FF5D86CA" />
+                <Setter Property="BorderThickness" Value="4,0,0,0" />
+                <Setter Property="Padding" Value="16,6,12,6" />
+                <Setter Property="Margin" Value="0,0,0,12" />
+                <Setter Property="Background" Value="#FF172335" />
+                <Setter Property="CornerRadius" Value="0,10,10,0" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="CodeBlockBorderStyle">
+                <Setter Property="Background" Value="#FF08111D" />
+                <Setter Property="BorderBrush" Value="#FF324865" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="Padding" Value="12" />
+                <Setter Property="Margin" Value="0,0,0,12" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="TableCellBorderStyle">
+                <Setter Property="BorderBrush" Value="#FF36516E" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="10,8" />
+                <Setter Property="Background" Value="#FF101B2C" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="TableHeaderCellBorderStyle">
+                <Setter Property="BorderBrush" Value="#FF36516E" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="10,8" />
+                <Setter Property="Background" Value="#FF1A2C47" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="ThematicBreakStyle">
+                <Setter Property="Background" Value="#FF385272" />
+                <Setter Property="Margin" Value="0,4,0,16" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="DiagnosticsLabelBorderStyle">
+                <Setter Property="Background" Value="#FF5B4400" />
+                <Setter Property="CornerRadius" Value="2" />
+                <Setter Property="Padding" Value="4,1,4,1" />
+                <Setter Property="Margin" Value="4" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="DockPanel">
+        <Style.Triggers>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="CodeBlockHeaderPanelStyle">
+                <Setter Property="Margin" Value="0,0,0,10" />
+                <Setter Property="LastChildFill" Value="False" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Button">
+        <Style.Triggers>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="CodeBlockCopyButtonStyle">
+                <Setter Property="Padding" Value="12,5" />
+                <Setter Property="Margin" Value="8,0,0,0" />
+                <Setter Property="Background" Value="#FF2A518F" />
+                <Setter Property="BorderBrush" Value="#FF4F79BA" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Foreground" Value="#FFFFFF" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="theming:MarkdownTheming.Role" Value="CodeBlockCopyButtonStyle" />
+                    <Condition Property="IsMouseOver" Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="#FF3567B5" />
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="theming:MarkdownTheming.Role" Value="CodeBlockCopyButtonStyle" />
+                    <Condition Property="IsPressed" Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="#FF1C3A67" />
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="ScrollViewer">
+        <Style.Triggers>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="CodeBlockScrollViewerStyle">
+                <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="Background" Value="Transparent" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Run">
+        <Style.Triggers>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="CodeInlineStyle">
+                <Setter Property="Background" Value="#FF22314C" />
+                <Setter Property="Foreground" Value="#F5F7FF" />
+                <Setter Property="FontFamily" Value="Consolas" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Hyperlink">
         <Setter Property="Foreground" Value="#84B7FF" />
         <Setter Property="TextDecorations" Value="Underline" />
     </Style>
-    <Style TargetType="Image" x:Key="ImageStyle">
+    <Style TargetType="Image">
         <Setter Property="MaxWidth" Value="720" />
     </Style>
-    <Style TargetType="TextBlock" x:Key="HtmlBlockStyle" BasedOn="{StaticResource ParagraphStyle}">
-        <Setter Property="FontFamily" Value="Consolas" />
-        <Setter Property="Background" Value="#FF162338" />
-        <Setter Property="Padding" Value="10" />
-    </Style>
 
-    <Style TargetType="Grid" x:Key="TableStyle">
-        <Setter Property="Margin" Value="0,0,0,12" />
-    </Style>
-    <Style TargetType="Border" x:Key="TableCellBorderStyle">
-        <Setter Property="BorderBrush" Value="#FF36516E" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="10,8" />
-        <Setter Property="Background" Value="#FF101B2C" />
-    </Style>
-    <Style TargetType="Border" x:Key="TableHeaderCellBorderStyle" BasedOn="{StaticResource TableCellBorderStyle}">
-        <Setter Property="Background" Value="#FF1A2C47" />
-    </Style>
-
-    <Style TargetType="CheckBox" x:Key="TaskListCheckBoxStyle">
+    <Style TargetType="CheckBox">
         <Setter Property="Margin" Value="0,0,4,-2" />
         <Setter Property="Foreground" Value="#E8EEF9" />
     </Style>
-    <Style TargetType="Border" x:Key="ThematicBreakStyle">
-        <Setter Property="Background" Value="#FF385272" />
-        <Setter Property="Margin" Value="0,4,0,16" />
-    </Style>
-
-    <Style TargetType="Span" x:Key="StrikeThroughStyle">
-        <Setter Property="TextBlock.TextDecorations" Value="Strikethrough" />
-    </Style>
-    <Style TargetType="Span" x:Key="SubscriptStyle">
-        <Setter Property="Typography.Variants" Value="Subscript" />
-    </Style>
-    <Style TargetType="Span" x:Key="SuperscriptStyle">
-        <Setter Property="Typography.Variants" Value="Superscript" />
-    </Style>
-    <Style TargetType="Span" x:Key="InsertedStyle">
-        <Setter Property="TextBlock.TextDecorations" Value="Underline" />
-    </Style>
-    <Style TargetType="Span" x:Key="MarkedStyle">
-        <Setter Property="Background" Value="#5B4C00" />
+    <Style TargetType="Span">
+        <Style.Triggers>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="StrikeThroughStyle">
+                <Setter Property="TextBlock.TextDecorations" Value="Strikethrough" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="SubscriptStyle">
+                <Setter Property="Typography.Variants" Value="Subscript" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="SuperscriptStyle">
+                <Setter Property="Typography.Variants" Value="Superscript" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="InsertedStyle">
+                <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+            </Trigger>
+            <Trigger Property="theming:MarkdownTheming.Role" Value="MarkedStyle">
+                <Setter Property="Background" Value="#5B4C00" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <SolidColorBrush x:Key="DiagnosticsOverlayBorderBrush" Color="#FFFF7B66" />
     <Thickness x:Key="DiagnosticsOverlayBorderThickness">1</Thickness>
-    <Style TargetType="Border" x:Key="DiagnosticsLabelBorderStyle">
-        <Setter Property="Background" Value="#FF5B4400" />
-        <Setter Property="CornerRadius" Value="2" />
-        <Setter Property="Padding" Value="4,1,4,1" />
-        <Setter Property="Margin" Value="4" />
-    </Style>
-    <Style TargetType="TextBlock" x:Key="DiagnosticsLabelTextStyle">
-        <Setter Property="FontSize" Value="11" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Foreground" Value="#FFF5E7B2" />
-    </Style>
 </ResourceDictionary>

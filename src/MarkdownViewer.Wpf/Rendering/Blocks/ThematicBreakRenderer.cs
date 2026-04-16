@@ -21,7 +21,7 @@ public sealed class ThematicBreakRenderer : IBlockRenderer<ThematicBreakBlock>
             HorizontalAlignment = HorizontalAlignment.Stretch,
         };
 
-        RenderHelpers.TryApplyStyle(border, context.Theme, ThemeKeys.ThematicBreakStyle);
+        RenderHelpers.ApplyRole(border, ThemeKeys.ThematicBreakStyle);
         return border;
     }
 }

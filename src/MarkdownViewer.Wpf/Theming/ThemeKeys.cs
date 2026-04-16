@@ -2,9 +2,6 @@ namespace MarkdownViewer.Wpf.Theming;
 
 public static class ThemeKeys
 {
-    public const string ViewerBackgroundBrush = nameof(ViewerBackgroundBrush);
-    public const string ViewerBorderBrush = nameof(ViewerBorderBrush);
-    public const string ViewerBorderThickness = nameof(ViewerBorderThickness);
     public const string RootPanelStyle = nameof(RootPanelStyle);
     public const string ParagraphStyle = nameof(ParagraphStyle);
     public const string Heading1Style = nameof(Heading1Style);
@@ -25,13 +22,10 @@ public static class ThemeKeys
     public const string CodeBlockCopyButtonStyle = nameof(CodeBlockCopyButtonStyle);
     public const string CodeBlockScrollViewerStyle = nameof(CodeBlockScrollViewerStyle);
     public const string CodeInlineStyle = nameof(CodeInlineStyle);
-    public const string HyperlinkStyle = nameof(HyperlinkStyle);
-    public const string ImageStyle = nameof(ImageStyle);
     public const string HtmlBlockStyle = nameof(HtmlBlockStyle);
     public const string TableStyle = nameof(TableStyle);
     public const string TableCellBorderStyle = nameof(TableCellBorderStyle);
     public const string TableHeaderCellBorderStyle = nameof(TableHeaderCellBorderStyle);
-    public const string TaskListCheckBoxStyle = nameof(TaskListCheckBoxStyle);
     public const string ThematicBreakStyle = nameof(ThematicBreakStyle);
     public const string StrikeThroughStyle = nameof(StrikeThroughStyle);
     public const string SubscriptStyle = nameof(SubscriptStyle);

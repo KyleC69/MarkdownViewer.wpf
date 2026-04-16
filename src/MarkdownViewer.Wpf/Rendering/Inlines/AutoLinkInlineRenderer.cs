@@ -16,7 +16,6 @@ public sealed class AutoLinkInlineRenderer : IInlineRenderer<AutolinkInline>
 
         string url = inline.IsEmail ? $"mailto:{inline.Url}" : inline.Url;
         Hyperlink hyperlink = new(new Run(inline.Url));
-        RenderHelpers.TryApplyStyle(hyperlink, context.Theme, ThemeKeys.HyperlinkStyle);
 
         if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri? uri))
         {

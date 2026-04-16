@@ -23,7 +23,6 @@ public sealed class LinkInlineRenderer : IInlineRenderer<LinkInline>
         }
 
         Hyperlink hyperlink = new();
-        RenderHelpers.TryApplyStyle(hyperlink, context.Theme, ThemeKeys.HyperlinkStyle);
 
         if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri? uri))
         {
@@ -42,7 +41,6 @@ public sealed class LinkInlineRenderer : IInlineRenderer<LinkInline>
     internal static System.Windows.Documents.Inline RenderImage(string? url, IRenderContext context)
     {
         Image image = new();
-        RenderHelpers.TryApplyStyle(image, context.Theme, ThemeKeys.ImageStyle);
 
         if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri? uri))
         {

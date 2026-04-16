@@ -15,7 +15,7 @@ public sealed class BlockQuoteRenderer : IBlockRenderer<QuoteBlock>
         ArgumentNullException.ThrowIfNull(context);
 
         Border border = new();
-        RenderHelpers.TryApplyStyle(border, context.Theme, ThemeKeys.BlockQuoteBorderStyle);
+        RenderHelpers.ApplyRole(border, ThemeKeys.BlockQuoteBorderStyle);
         border.Child = RenderHelpers.RenderChildBlocks(block, context);
         return border;
     }

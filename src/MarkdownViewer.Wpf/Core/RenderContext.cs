@@ -1,8 +1,6 @@
 using System.Windows;
 using System.Windows.Documents;
 
-using MarkdownViewer.Wpf.Theming;
-
 namespace MarkdownViewer.Wpf.Core;
 
 internal sealed class RenderContext : IRenderContext
@@ -10,15 +8,18 @@ internal sealed class RenderContext : IRenderContext
     private readonly List<IPostProcessor> postProcessors;
     private readonly RendererDispatcher rendererDispatcher;
 
-    public RenderContext(RendererDispatcher rendererDispatcher, ITheme theme, IServiceProvider services, IEnumerable<IPostProcessor>? postProcessors = null)
+    public RenderContext(RendererDispatcher rendererDispatcher, ResourceDictionary themeResources, ResourceDictionary resources, IServiceProvider services, IEnumerable<IPostProcessor>? postProcessors = null)
     {
         this.rendererDispatcher = rendererDispatcher ?? throw new ArgumentNullException(nameof(rendererDispatcher));
-        Theme = theme ?? throw new ArgumentNullException(nameof(theme));
+        ThemeResources = themeResources ?? throw new ArgumentNullException(nameof(themeResources));
+        Resources = resources ?? throw new ArgumentNullException(nameof(resources));
         Services = services ?? throw new ArgumentNullException(nameof(services));
         this.postProcessors = postProcessors?.ToList() ?? [];
     }
 
-    public ITheme Theme { get; }
+    public ResourceDictionary Resources { get; }
+
+    public ResourceDictionary ThemeResources { get; }
 
     public IServiceProvider Services { get; }
 

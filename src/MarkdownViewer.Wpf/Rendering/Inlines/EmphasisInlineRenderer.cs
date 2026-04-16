@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Documents;
 
 using Markdig.Syntax.Inlines;
@@ -14,12 +15,12 @@ public sealed class EmphasisInlineRenderer : IInlineRenderer<EmphasisInline>
         ArgumentNullException.ThrowIfNull(inline);
         ArgumentNullException.ThrowIfNull(context);
 
-        Span span = CreateSpan(inline, context.Theme);
+        Span span = CreateSpan(inline, context.Resources);
         RenderHelpers.AppendInlines(span.Inlines, inline, context);
         return span;
     }
 
-    internal static Span CreateSpan(EmphasisInline inline, ITheme theme)
+    internal static Span CreateSpan(EmphasisInline inline, ResourceDictionary resources)
     {
         Span span = inline.DelimiterChar switch
         {
@@ -40,7 +41,7 @@ public sealed class EmphasisInlineRenderer : IInlineRenderer<EmphasisInline>
 
         if (!string.IsNullOrWhiteSpace(styleKey))
         {
-            RenderHelpers.TryApplyStyle(span, theme, styleKey!);
+            RenderHelpers.ApplyRole(span, styleKey!);
         }
 
         return span;

@@ -20,7 +20,6 @@ public sealed class TaskListInlineRenderer : IInlineRenderer<TaskList>
             IsChecked = inline.Checked,
             IsEnabled = false,
         };
-        RenderHelpers.TryApplyStyle(checkBox, context.Theme, ThemeKeys.TaskListCheckBoxStyle);
         return new InlineUIContainer(checkBox);
     }
 }

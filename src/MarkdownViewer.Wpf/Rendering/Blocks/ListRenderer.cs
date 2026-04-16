@@ -19,7 +19,7 @@ public sealed class ListRenderer : IBlockRenderer<ListBlock>
             Orientation = Orientation.Vertical,
         };
 
-        RenderHelpers.TryApplyStyle(panel, context.Theme, ThemeKeys.ListStyle);
+        RenderHelpers.ApplyRole(panel, ThemeKeys.ListStyle);
 
         foreach (Block child in block)
         {

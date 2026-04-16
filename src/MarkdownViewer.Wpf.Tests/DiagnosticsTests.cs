@@ -40,7 +40,7 @@ public sealed class DiagnosticsTests
 
         DiagnosticsOverlayPostProcessor.Annotate(border, context);
 
-        Assert.Equal(context.Theme.GetBrush(ThemeKeys.DiagnosticsOverlayBorderBrush), border.BorderBrush);
+        Assert.Equal(ResourceDictionaryTheme.TryFindResource(context.Resources, ThemeKeys.DiagnosticsOverlayBorderBrush), border.BorderBrush);
         Assert.Equal(new Thickness(1), border.BorderThickness);
     }
 

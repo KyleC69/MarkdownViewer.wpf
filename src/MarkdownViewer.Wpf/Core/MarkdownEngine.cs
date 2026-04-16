@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 using Markdig;
@@ -27,21 +27,27 @@ public sealed class MarkdownEngine
         this.postProcessors = postProcessors ?? throw new ArgumentNullException(nameof(postProcessors));
     }
 
-    public UIElement Render(string markdown, ITheme theme, IServiceProvider services)
+    public UIElement Render(string markdown, IServiceProvider services, ResourceDictionary? themeResources = null)
     {
         ArgumentNullException.ThrowIfNull(markdown);
-        ArgumentNullException.ThrowIfNull(theme);
         ArgumentNullException.ThrowIfNull(services);
 
         MarkdownDocument document = Markdig.Markdown.Parse(markdown, pipeline);
+        ResourceDictionary effectiveThemeResources = themeResources ?? new ResourceDictionary();
+        ResourceDictionary scopedResources = new();
+        if (effectiveThemeResources.Count > 0 || effectiveThemeResources.MergedDictionaries.Count > 0)
+        {
+            scopedResources.MergedDictionaries.Add(effectiveThemeResources);
+        }
+
         StackPanel root = new()
         {
             Orientation = Orientation.Vertical,
+            Resources = scopedResources,
         };
+        RenderHelpers.ApplyRole(root, ThemeKeys.RootPanelStyle);
 
-        RenderHelpers.TryApplyStyle(root, theme, ThemeKeys.RootPanelStyle);
-
-        RenderContext context = new(dispatcher, theme, services, postProcessors);
+        RenderContext context = new(dispatcher, effectiveThemeResources, scopedResources, services, postProcessors);
         foreach (Block block in document)
         {
             root.Children.Add(context.RenderBlock(block));
