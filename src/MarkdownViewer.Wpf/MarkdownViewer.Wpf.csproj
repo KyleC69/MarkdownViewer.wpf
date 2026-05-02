@@ -1,61 +1,60 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <AssemblyName>MarkdownViewer.Wpf</AssemblyName>
-    <RootNamespace>MarkdownViewer.Wpf</RootNamespace>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <LangVersion>latest</LangVersion>
-    <AnalysisLevel>latest</AnalysisLevel>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <Version>1.0.0</Version>
-    <Authors>Kyle L. Crowder</Authors>
-    <Description>Deterministic Markdown rendering for WPF using a UIElement tree.</Description>
-    <PackageId>MarkdownViewer.Wpf</PackageId>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/KyleC69/MarkdownViewer.Wpf</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/KyleC69/MarkdownViewer.Wpf</PackageProjectUrl>
-	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>markdown markdig wpf ui</PackageTags>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>Markdown Viewer for WPF</Title>
-    <Copyright>Kyle L. Crowder</Copyright>
-    <PackageIcon>app-icon.png</PackageIcon>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <NeutralLanguage>en</NeutralLanguage>
-	  <ReleaseCopyOutputDir>F:\Packages</ReleaseCopyOutputDir>
-	  <PackOutputFolder>\MarkdownViewer.Wpf\bin\Debug</PackOutputFolder>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
-    <PackageReference Include="Markdig" Version="1.1.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Assets\app-icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<PropertyGroup>
+		<AssemblyName>MarkdownViewer.Wpf</AssemblyName>
+		<RootNamespace>MarkdownViewer.Wpf</RootNamespace>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>latest</LangVersion>
+		<AnalysisLevel>latest</AnalysisLevel>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+	</PropertyGroup>
 
 
-	<Target Name="CopyBuildOutputToReleases" AfterTargets="Pack">
-		<ItemGroup>
-			<BuildOutputFiles Include="$(PackOutputFolder)*" />
-		</ItemGroup>
+	<PropertyGroup>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Authors>Kyle L. Crowder</Authors>
+		<Description>Deterministic Markdown rendering for WPF using native UI elements.</Description>
+		<PackageId>MarkdownViewer.Wpf</PackageId>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/KyleC69/MarkdownViewer.Wpf</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/KyleC69/MarkdownViewer.Wpf</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageTags>markdown markdig wpf ui</PackageTags>
+		<Title>Markdown Viewer Control for WPF</Title>
+		<Copyright>Kyle L. Crowder</Copyright>
+		<PackageIcon>app-icon.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<NeutralLanguage>en</NeutralLanguage>
+		<ReleaseCopyOutputDir>F:\Packages</ReleaseCopyOutputDir>
+		<PackOutputFolder>\MarkdownViewer.Wpf\bin\Debug</PackOutputFolder>
+	</PropertyGroup>
 
-		<MakeDir Directories="$(ReleaseCopyOutputDir)" />
-		<Copy SourceFiles="@(BuildOutputFiles)" DestinationFiles="@(BuildOutputFiles-&gt;'$(ReleaseCopyOutputDir))" SkipUnchangedFiles="false" />
-		<Message Text="Package output copied to $(ReleaseCopyOutputDir)" Importance="High" />
-	</Target>
+
+
+
+
+	<ItemGroup>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
+		<PackageReference Include="Markdig" Version="1.1.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="Assets\app-icon.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+
 
 
 

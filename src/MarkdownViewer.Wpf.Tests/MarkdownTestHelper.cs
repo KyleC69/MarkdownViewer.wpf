@@ -1,14 +1,13 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Media;
 
 using Markdig;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 
+using MarkdownViewer.Wpf.Controls;
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 using Xunit;
 
@@ -18,22 +17,30 @@ internal static class MarkdownTestHelper
 {
     public static readonly MarkdownPipeline Pipeline = MarkdownEngine.CreateDefaultPipeline();
 
-    public static ResourceDictionaryTheme CreateTheme(params (string key, object value)[] entries)
+    public static ResourceDictionary CreateThemeResources(params (object key, object value)[] entries)
     {
         ResourceDictionary dictionary = new();
-        foreach ((string key, object value) in entries)
+        foreach ((object key, object value) in entries)
         {
             dictionary[key] = value;
         }
 
-        return new ResourceDictionaryTheme(dictionary);
+        return dictionary;
     }
 
-    public static RenderContext CreateContext(RendererDispatcher? dispatcher = null, ITheme? theme = null, IServiceProvider? services = null)
+    public static RenderContext CreateContext(RendererDispatcher? dispatcher = null, ResourceDictionary? themeResources = null, IServiceProvider? services = null)
     {
+        ResourceDictionary effectiveThemeResources = themeResources ?? new ResourceDictionary();
+        ResourceDictionary scopedResources = new();
+        if (effectiveThemeResources.Count > 0 || effectiveThemeResources.MergedDictionaries.Count > 0)
+        {
+            scopedResources.MergedDictionaries.Add(effectiveThemeResources);
+        }
+
         return new RenderContext(
             dispatcher ?? MarkdownRendererBuilder.CreateDefault().BuildDispatcher(),
-            theme ?? new DefaultTheme(),
+            effectiveThemeResources,
+            scopedResources,
             services ?? EmptyServiceProvider.Instance);
     }
 
@@ -42,13 +49,12 @@ internal static class MarkdownTestHelper
         return new TestServiceProvider(services);
     }
 
-    public static StackPanel RenderToPanel(string markdown, MarkdownEngine? engine = null, ITheme? theme = null, IServiceProvider? services = null)
+    public static MarkdownRootPanel RenderToPanel(string markdown, MarkdownEngine? engine = null, ResourceDictionary? themeResources = null, IServiceProvider? services = null)
     {
         engine ??= MarkdownEngine.CreateDefault();
-        theme ??= new DefaultTheme();
         services ??= EmptyServiceProvider.Instance;
 
-        return Assert.IsType<StackPanel>(engine.Render(markdown, services, ThemeResourceAdapter.Resolve(theme)));
+        return Assert.IsType<MarkdownRootPanel>(engine.Render(markdown, services, themeResources));
     }
 
     public static MarkdownDocument Parse(string markdown)
@@ -213,23 +219,4 @@ internal sealed class TestServiceProvider(params (Type serviceType, object imple
             ? implementation
             : null;
     }
-}
-
-internal sealed class FakeTheme : ITheme
-{
-    public Func<string, Brush?> BrushResolver { get; init; } = static _ => null;
-
-    public Func<string, double?> FontSizeResolver { get; init; } = static _ => null;
-
-    public Func<string, Style?> StyleResolver { get; init; } = static _ => null;
-
-    public Func<string, Thickness?> ThicknessResolver { get; init; } = static _ => null;
-
-    public Brush? GetBrush(string key) => BrushResolver(key);
-
-    public double? GetFontSize(string key) => FontSizeResolver(key);
-
-    public Style? GetStyle(string key) => StyleResolver(key);
-
-    public Thickness? GetThickness(string key) => ThicknessResolver(key);
 }

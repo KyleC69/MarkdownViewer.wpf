@@ -1,10 +1,11 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 using Markdig.Syntax;
 
+using MarkdownViewer.Wpf.Controls;
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf.Rendering.Blocks;
 
@@ -15,13 +16,14 @@ public sealed class ThematicBreakRenderer : IBlockRenderer<ThematicBreakBlock>
         ArgumentNullException.ThrowIfNull(block);
         ArgumentNullException.ThrowIfNull(context);
 
-        Border border = new()
+        ThematicBreakBorder border = new()
         {
             Height = 1,
             HorizontalAlignment = HorizontalAlignment.Stretch,
+            Background = SystemColors.ControlDarkBrush,
+            Margin = new Thickness(0, 4, 0, 16),
         };
 
-        RenderHelpers.ApplyRole(border, ThemeKeys.ThematicBreakStyle);
         return border;
     }
 }

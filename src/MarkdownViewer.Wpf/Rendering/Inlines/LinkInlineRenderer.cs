@@ -5,7 +5,6 @@ using System.Windows.Documents;
 using Markdig.Syntax.Inlines;
 
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf.Rendering.Inlines;
 

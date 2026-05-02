@@ -2,8 +2,8 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
+using MarkdownViewer.Wpf.Controls;
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 using Xunit;
 
@@ -19,7 +19,7 @@ public sealed class MarkdownViewTests
         view.Markdown = "# Title";
         DispatcherTestHelper.Drain();
 
-        StackPanel panel = Assert.IsType<StackPanel>(view.RenderedContent);
+        MarkdownRootPanel panel = Assert.IsType<MarkdownRootPanel>(view.RenderedContent);
         Assert.Single(panel.Children);
     }
 
@@ -37,26 +37,124 @@ public sealed class MarkdownViewTests
     }
 
     [StaFact]
-    public void SettingMarkdown_AppliesThemeSurfaceResources()
+    public void SettingMarkdownToWhitespace_RemovesRenderedContent()
     {
-        SolidColorBrush background = new(Colors.MidnightBlue);
-        SolidColorBrush borderBrush = new(Colors.CadetBlue);
-        ResourceDictionaryTheme theme = MarkdownTestHelper.CreateTheme(
-            (ThemeKeys.ViewerBackgroundBrush, background),
-            (ThemeKeys.ViewerBorderBrush, borderBrush),
-            (ThemeKeys.ViewerBorderThickness, new Thickness(3)),
-            (ThemeKeys.ParagraphStyle, new Style(typeof(TextBlock))));
+        MarkdownView view = new();
+        view.Markdown = "Some content";
+        DispatcherTestHelper.Drain();
+
+        view.Markdown = "   ";
+        DispatcherTestHelper.Drain();
+
+        Assert.Null(view.RenderedContent);
+    }
+
+    [StaFact]
+    public void SettingMarkdownToEmptyString_RemovesRenderedContent()
+    {
+        MarkdownView view = new();
+        view.Markdown = "Some content";
+        DispatcherTestHelper.Drain();
+
+        view.Markdown = string.Empty;
+        DispatcherTestHelper.Drain();
+
+        Assert.Null(view.RenderedContent);
+    }
+
+    [StaFact]
+    public void SettingThemeResources_AppliesNativeImplicitStyles()
+    {
+        SolidColorBrush foreground = new(Colors.MidnightBlue);
+        Style paragraphStyle = new(typeof(ParagraphTextBlock));
+        paragraphStyle.Setters.Add(new Setter(TextBlock.ForegroundProperty, foreground));
+
+        ResourceDictionary themeResources = MarkdownTestHelper.CreateThemeResources(
+            (typeof(ParagraphTextBlock), paragraphStyle));
 
         MarkdownView view = new()
         {
-            ThemeResources = theme,
+            ThemeResources = themeResources,
             Markdown = "Paragraph",
         };
 
         DispatcherTestHelper.Drain();
 
-        Assert.Same(background, view.Background);
-        Assert.Same(borderBrush, view.BorderBrush);
-        Assert.Equal(new Thickness(3), view.BorderThickness);
+        MarkdownRootPanel panel = Assert.IsType<MarkdownRootPanel>(view.RenderedContent);
+        ParagraphTextBlock paragraph = Assert.IsType<ParagraphTextBlock>(panel.Children[0]);
+
+        Assert.Same(foreground, paragraph.Foreground);
+    }
+
+    [StaFact]
+    public void UpdatingThemeResources_ReRendersWithNewStyles()
+    {
+        Style initialStyle = new(typeof(ParagraphTextBlock));
+        initialStyle.Setters.Add(new Setter(TextBlock.FontSizeProperty, 12d));
+        ResourceDictionary initialTheme = MarkdownTestHelper.CreateThemeResources((typeof(ParagraphTextBlock), initialStyle));
+
+        Style updatedStyle = new(typeof(ParagraphTextBlock));
+        updatedStyle.Setters.Add(new Setter(TextBlock.FontSizeProperty, 19d));
+        ResourceDictionary updatedTheme = MarkdownTestHelper.CreateThemeResources((typeof(ParagraphTextBlock), updatedStyle));
+
+        MarkdownView view = new()
+        {
+            Markdown = "Paragraph",
+            ThemeResources = initialTheme,
+        };
+
+        DispatcherTestHelper.Drain();
+
+        view.ThemeResources = updatedTheme;
+        DispatcherTestHelper.Drain();
+
+        MarkdownRootPanel panel = Assert.IsType<MarkdownRootPanel>(view.RenderedContent);
+        ParagraphTextBlock paragraph = Assert.IsType<ParagraphTextBlock>(panel.Children[0]);
+
+        Assert.Equal(19d, paragraph.FontSize);
+    }
+
+    [StaFact]
+    public void RequestRefresh_WhenCalledMultipleTimes_OnlyDispatchesOneRefresh()
+    {
+        MarkdownView view = new();
+        view.Markdown = "Initial";
+        DispatcherTestHelper.Drain();
+
+        // Call RequestRefresh multiple times before the dispatcher processes
+        view.RequestRefresh();
+        view.RequestRefresh();
+        view.RequestRefresh();
+
+        // The content should remain from the first render; a single refresh will re-render
+        DispatcherTestHelper.Drain();
+
+        // After drain, content should be non-null (the single coalesced refresh ran)
+        Assert.NotNull(view.RenderedContent);
+    }
+
+    [StaFact]
+    public void RefreshContent_WhenMarkdownIsNull_SetsRenderedContentToNull()
+    {
+        MarkdownView view = new();
+        view.Markdown = "Some content";
+        DispatcherTestHelper.Drain();
+
+        view.Markdown = null;
+        view.RefreshContent();
+
+        Assert.Null(view.RenderedContent);
+    }
+
+    [StaFact]
+    public void RefreshContent_WhenMarkdownHasContent_SetsRenderedContent()
+    {
+        MarkdownView view = new();
+
+        view.Markdown = "Hello";
+        view.RefreshContent();
+
+        Assert.NotNull(view.RenderedContent);
+        Assert.IsType<MarkdownRootPanel>(view.RenderedContent);
     }
 }

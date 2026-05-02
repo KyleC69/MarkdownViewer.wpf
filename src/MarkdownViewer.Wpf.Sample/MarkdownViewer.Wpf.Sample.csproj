@@ -1,21 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿	<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="MarkdownViewer.Wpf" Version="1.0.0" />
+    <ProjectReference Include="..\MarkdownViewer.Wpf\MarkdownViewer.Wpf.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="SampleMarkdown.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\sample-image.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Update="SampleMarkdown.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\sample-image.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+
 </Project>

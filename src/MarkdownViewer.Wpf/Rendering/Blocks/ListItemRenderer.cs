@@ -3,14 +3,14 @@ using System.Windows.Controls;
 
 using Markdig.Syntax;
 
+using MarkdownViewer.Wpf.Controls;
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf.Rendering.Blocks;
 
 public sealed class ListItemRenderer : IBlockRenderer<ListItemBlock>
 {
-    public System.Windows.UIElement Render(ListItemBlock block, IRenderContext context)
+    public UIElement Render(ListItemBlock block, IRenderContext context)
     {
         ArgumentNullException.ThrowIfNull(block);
         ArgumentNullException.ThrowIfNull(context);
@@ -24,23 +24,22 @@ public sealed class ListItemRenderer : IBlockRenderer<ListItemBlock>
         ArgumentNullException.ThrowIfNull(contentElements);
         ArgumentNullException.ThrowIfNull(context);
 
-        Grid grid = new();
+        ListItemGrid grid = new()
+        {
+            Margin = new Thickness(0, 0, 0, 4),
+        };
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        RenderHelpers.ApplyRole(grid, ThemeKeys.ListItemContainerStyle);
 
-        TextBlock marker = new()
+        ListItemMarkerTextBlock marker = new()
         {
             Text = markerText,
+            VerticalAlignment = VerticalAlignment.Top,
+            Margin = new Thickness(0, 0, 8, 0),
         };
-        RenderHelpers.ApplyRole(marker, ThemeKeys.ListItemMarkerStyle);
         Grid.SetColumn(marker, 0);
 
-        StackPanel content = new()
-        {
-            Orientation = Orientation.Vertical,
-        };
-        RenderHelpers.ApplyRole(content, ThemeKeys.ListItemContentStyle);
+        ListItemContentPanel content = new();
         foreach (UIElement element in contentElements)
         {
             content.Children.Add(element);

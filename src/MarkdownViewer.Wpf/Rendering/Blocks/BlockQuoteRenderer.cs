@@ -1,9 +1,9 @@
-using System.Windows.Controls;
+using System.Windows;
 
 using Markdig.Syntax;
 
+using MarkdownViewer.Wpf.Controls;
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf.Rendering.Blocks;
 
@@ -14,8 +14,13 @@ public sealed class BlockQuoteRenderer : IBlockRenderer<QuoteBlock>
         ArgumentNullException.ThrowIfNull(block);
         ArgumentNullException.ThrowIfNull(context);
 
-        Border border = new();
-        RenderHelpers.ApplyRole(border, ThemeKeys.BlockQuoteBorderStyle);
+        BlockQuoteBorder border = new()
+        {
+            BorderThickness = new Thickness(4, 0, 0, 0),
+            BorderBrush = SystemColors.ControlDarkBrush,
+            Padding = new Thickness(12, 6, 12, 6),
+            Margin = new Thickness(0, 0, 0, 12),
+        };
         border.Child = RenderHelpers.RenderChildBlocks(block, context);
         return border;
     }

@@ -4,7 +4,6 @@ using Markdig.Syntax;
 
 using MarkdownViewer.Wpf.Core;
 using MarkdownViewer.Wpf.Rendering.Html;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf.Rendering.Blocks;
 

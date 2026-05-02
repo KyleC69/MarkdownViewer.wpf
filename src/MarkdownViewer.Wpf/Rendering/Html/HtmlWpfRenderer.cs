@@ -5,10 +5,10 @@ using System.Windows.Media;
 
 using HtmlAgilityPack;
 
+using MarkdownViewer.Wpf.Controls;
 using MarkdownViewer.Wpf.Core;
 using MarkdownViewer.Wpf.Diagnostics;
 using MarkdownViewer.Wpf.Rendering.Blocks;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf.Rendering.Html;
 
@@ -39,7 +39,7 @@ internal static class HtmlWpfRenderer
 
         if (elements.Count == 0)
         {
-            return RenderHelpers.CreateTextBlock(context, ThemeKeys.HtmlBlockStyle);
+            return new ParagraphTextBlock() { TextWrapping = TextWrapping.Wrap };
         }
 
         if (elements.Count == 1)
@@ -51,7 +51,6 @@ internal static class HtmlWpfRenderer
         {
             Orientation = Orientation.Vertical,
         };
-        RenderHelpers.ApplyRole(panel, ThemeKeys.RootPanelStyle);
 
         foreach (UIElement element in elements)
         {
@@ -119,7 +118,7 @@ internal static class HtmlWpfRenderer
                 return [];
             }
 
-            TextBlock textBlock = RenderHelpers.CreateTextBlock(context, ThemeKeys.HtmlBlockStyle);
+            ParagraphTextBlock textBlock = new() { TextWrapping = TextWrapping.Wrap };
             textBlock.Text = text;
             return [textBlock];
         }
@@ -127,15 +126,16 @@ internal static class HtmlWpfRenderer
         string tagName = node.Name.ToLowerInvariant();
         return tagName switch
         {
-            "p" => [CreateTextBlock(node.ChildNodes, context, ThemeKeys.ParagraphStyle)],
+            "p" => [CreateTextBlock(node.ChildNodes, context)],
+            "a" => [CreateTextBlock(new[] { node }, context)],
             "div" or "section" or "article" or "main" or "header" or "footer" or "aside" or "figure" or "details" => [CreateContainer(node, context)],
-            "h1" => [CreateTextBlock(node.ChildNodes, context, ThemeKeys.Heading1Style)],
-            "h2" => [CreateTextBlock(node.ChildNodes, context, ThemeKeys.Heading2Style)],
-            "h3" => [CreateTextBlock(node.ChildNodes, context, ThemeKeys.Heading3Style)],
-            "h4" => [CreateTextBlock(node.ChildNodes, context, ThemeKeys.Heading4Style)],
-            "h5" => [CreateTextBlock(node.ChildNodes, context, ThemeKeys.Heading5Style)],
-            "h6" => [CreateTextBlock(node.ChildNodes, context, ThemeKeys.Heading6Style)],
-            "figcaption" or "summary" => [CreateTextBlock(node.ChildNodes, context, ThemeKeys.HtmlBlockStyle)],
+            "h1" => [CreateHeadingTextBlock(node.ChildNodes, context, 1)],
+            "h2" => [CreateHeadingTextBlock(node.ChildNodes, context, 2)],
+            "h3" => [CreateHeadingTextBlock(node.ChildNodes, context, 3)],
+            "h4" => [CreateHeadingTextBlock(node.ChildNodes, context, 4)],
+            "h5" => [CreateHeadingTextBlock(node.ChildNodes, context, 5)],
+            "h6" => [CreateHeadingTextBlock(node.ChildNodes, context, 6)],
+            "figcaption" or "summary" => [CreateTextBlock(node.ChildNodes, context)],
             "blockquote" => [CreateBlockQuote(node, context)],
             "pre" => [CreatePreformattedBlock(node, context)],
             "ul" => [CreateList(node, context, isOrdered: false)],
@@ -149,8 +149,7 @@ internal static class HtmlWpfRenderer
 
     private static UIElement CreateBlockQuote(HtmlNode node, IRenderContext context)
     {
-        Border border = new();
-        RenderHelpers.ApplyRole(border, ThemeKeys.BlockQuoteBorderStyle);
+        BlockQuoteBorder border = new();
         border.Child = CreateStackPanel(node.ChildNodes, context);
         return border;
     }
@@ -162,7 +161,13 @@ internal static class HtmlWpfRenderer
             return CreateStackPanel(node.ChildNodes, context);
         }
 
-        return CreateTextBlock(node.ChildNodes, context, ThemeKeys.HtmlBlockStyle);
+        ParagraphTextBlock textBlock = new() { TextWrapping = TextWrapping.Wrap };
+        foreach (System.Windows.Documents.Inline inline in RenderInlineNodes(node.ChildNodes, context))
+        {
+            textBlock.Inlines.Add(inline);
+        }
+
+        return textBlock;
     }
 
     private static IReadOnlyList<UIElement> CreateFallbackText(HtmlNode node, IRenderContext context)
@@ -173,7 +178,7 @@ internal static class HtmlWpfRenderer
             return [];
         }
 
-        TextBlock textBlock = RenderHelpers.CreateTextBlock(context, ThemeKeys.HtmlBlockStyle);
+        ParagraphTextBlock textBlock = new() { TextWrapping = TextWrapping.Wrap };
         textBlock.Text = text;
         return [textBlock];
     }
@@ -207,11 +212,10 @@ internal static class HtmlWpfRenderer
 
     private static UIElement CreateList(HtmlNode listNode, IRenderContext context, bool isOrdered)
     {
-        StackPanel panel = new()
+        ListPanel panel = new()
         {
             Orientation = Orientation.Vertical,
         };
-        RenderHelpers.ApplyRole(panel, ThemeKeys.ListStyle);
 
         int orderedStart = Math.Max(1, listNode.GetAttributeValue("start", 1));
         int index = 0;
@@ -242,8 +246,7 @@ internal static class HtmlWpfRenderer
 
     private static Grid CreateTable(HtmlNode tableNode, IRenderContext context)
     {
-        Grid grid = new();
-        RenderHelpers.ApplyRole(grid, ThemeKeys.TableStyle);
+        TableGrid grid = new();
 
         List<HtmlNode> rows = tableNode.Descendants().Where(static node => string.Equals(node.Name, "tr", StringComparison.OrdinalIgnoreCase)).ToList();
         int columnCount = rows.Count == 0
@@ -258,17 +261,16 @@ internal static class HtmlWpfRenderer
         for (int rowIndex = 0; rowIndex < rows.Count; rowIndex++)
         {
             HtmlNode row = rows[rowIndex];
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
             int columnIndex = 0;
+
             foreach (HtmlNode cell in row.ChildNodes.Where(static candidate => IsCell(candidate.Name)))
             {
-                Border border = new();
+                TableCellBorder border = new();
                 bool isHeader = string.Equals(cell.Name, "th", StringComparison.OrdinalIgnoreCase);
-                RenderHelpers.ApplyRole(border, isHeader ? ThemeKeys.TableHeaderCellBorderStyle : ThemeKeys.TableCellBorderStyle);
+
                 border.Child = HasBlockChildren(cell)
                     ? CreateStackPanel(cell.ChildNodes, context)
-                    : CreateTextBlock(cell.ChildNodes, context, ThemeKeys.ParagraphStyle);
+                    : CreateTextBlock(cell.ChildNodes, context);
 
                 Grid.SetRow(border, rowIndex);
                 Grid.SetColumn(border, columnIndex);
@@ -295,18 +297,36 @@ internal static class HtmlWpfRenderer
 
     private static Border CreateThematicBreak(IRenderContext context)
     {
-        Border border = new()
+        ThematicBreakBorder border = new()
         {
             Height = 1,
             HorizontalAlignment = HorizontalAlignment.Stretch,
         };
-        RenderHelpers.ApplyRole(border, ThemeKeys.ThematicBreakStyle);
         return border;
     }
 
-    private static TextBlock CreateTextBlock(IEnumerable<HtmlNode> nodes, IRenderContext context, string styleKey)
+    private static TextBlock CreateTextBlock(IEnumerable<HtmlNode> nodes, IRenderContext context)
     {
-        TextBlock textBlock = RenderHelpers.CreateTextBlock(context, styleKey);
+        ParagraphTextBlock textBlock = new() { TextWrapping = TextWrapping.Wrap };
+        foreach (System.Windows.Documents.Inline inline in RenderInlineNodes(nodes, context))
+        {
+            textBlock.Inlines.Add(inline);
+        }
+
+        return textBlock;
+    }
+
+    private static TextBlock CreateHeadingTextBlock(IEnumerable<HtmlNode> nodes, IRenderContext context, int level)
+    {
+        TextBlock textBlock = level switch
+        {
+            1 => new Heading1TextBlock { TextWrapping = TextWrapping.Wrap },
+            2 => new Heading2TextBlock { TextWrapping = TextWrapping.Wrap },
+            3 => new Heading3TextBlock { TextWrapping = TextWrapping.Wrap },
+            4 => new Heading4TextBlock { TextWrapping = TextWrapping.Wrap },
+            5 => new Heading5TextBlock { TextWrapping = TextWrapping.Wrap },
+            _ => new Heading6TextBlock { TextWrapping = TextWrapping.Wrap },
+        };
         foreach (System.Windows.Documents.Inline inline in RenderInlineNodes(nodes, context))
         {
             textBlock.Inlines.Add(inline);
@@ -373,23 +393,64 @@ internal static class HtmlWpfRenderer
                 yield return CreateSpan<Underline>(node, context);
                 yield break;
             case "code":
-                Run codeRun = new(HtmlEntity.DeEntitize(node.InnerText));
-                RenderHelpers.ApplyRole(codeRun, ThemeKeys.CodeInlineStyle);
-                yield return codeRun;
+                // Use custom Span type for implicit styling
+                CodeInlineSpan codeSpan = new();
+                codeSpan.Inlines.Add(new Run(HtmlEntity.DeEntitize(node.InnerText)));
+                yield return codeSpan;
                 yield break;
             case "mark":
-                yield return CreateStyledSpan(node, context, ThemeKeys.MarkedStyle);
+                {
+                    MarkedSpan span = new();
+                    foreach (HtmlNode child in node.ChildNodes)
+                    {
+                        foreach (var inline in RenderInlineNode(child, context))
+                        {
+                            span.Inlines.Add(inline);
+                        }
+                    }
+                    yield return span;
+                }
                 yield break;
             case "del":
             case "strike":
             case "s":
-                yield return CreateStyledSpan(node, context, ThemeKeys.StrikeThroughStyle);
+                {
+                    StrikeThroughSpan span = new();
+                    foreach (HtmlNode child in node.ChildNodes)
+                    {
+                        foreach (var inline in RenderInlineNode(child, context))
+                        {
+                            span.Inlines.Add(inline);
+                        }
+                    }
+                    yield return span;
+                }
                 yield break;
             case "sup":
-                yield return CreateStyledSpan(node, context, ThemeKeys.SuperscriptStyle);
+                {
+                    SuperscriptSpan span = new();
+                    foreach (HtmlNode child in node.ChildNodes)
+                    {
+                        foreach (var inline in RenderInlineNode(child, context))
+                        {
+                            span.Inlines.Add(inline);
+                        }
+                    }
+                    yield return span;
+                }
                 yield break;
             case "sub":
-                yield return CreateStyledSpan(node, context, ThemeKeys.SubscriptStyle);
+                {
+                    SubscriptSpan span = new();
+                    foreach (HtmlNode child in node.ChildNodes)
+                    {
+                        foreach (var inline in RenderInlineNode(child, context))
+                        {
+                            span.Inlines.Add(inline);
+                        }
+                    }
+                    yield return span;
+                }
                 yield break;
             case "a":
                 yield return CreateHyperlink(node, context);
@@ -434,18 +495,6 @@ internal static class HtmlWpfRenderer
         where TSpan : Span, new()
     {
         TSpan span = new();
-        foreach (System.Windows.Documents.Inline inline in RenderInlineNodes(node.ChildNodes, context))
-        {
-            span.Inlines.Add(inline);
-        }
-
-        return span;
-    }
-
-    private static Span CreateStyledSpan(HtmlNode node, IRenderContext context, string styleKey)
-    {
-        Span span = new();
-        RenderHelpers.ApplyRole(span, styleKey);
         foreach (System.Windows.Documents.Inline inline in RenderInlineNodes(node.ChildNodes, context))
         {
             span.Inlines.Add(inline);

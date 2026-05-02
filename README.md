@@ -12,7 +12,7 @@
   - bold, italic, strikethrough, subscript, superscript, inserted, marked, and inline code
   - ordered, unordered, and task lists
   - block quotes and thematic breaks
-  - indented and fenced code blocks
+    - indented and fenced code blocks with a header row, language label, and copy button
   - tables
   - links, auto-links, and images
   - HTML blocks and supported inline HTML
@@ -21,6 +21,7 @@
   - image loading via `IMarkdownImageSourceResolver`
 - Diagnostics surface through `MarkdownDiagnostics.Emitted`
 - Sample app included for live editing and theme switching
+- Runtime-adjustable preview/editor split in the sample app
 
 ## Requirements
 
@@ -33,7 +34,7 @@ Add the NuGet package reference:
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="MarkdownViewer.Wpf" Version="6.0.0" />
+  <PackageReference Include="MarkdownViewer.Wpf" Version="1.0.1" />
 </ItemGroup>
 ```
 
@@ -174,6 +175,7 @@ MarkdownDiagnostics.Emitted += (_, args) =>
 The repository contains a sample WPF application in `src/MarkdownViewer.Wpf.Sample` that demonstrates:
 
 - two-pane editing and preview
+- runtime-adjustable pane split via `GridSplitter`
 - theme switching
 - tables, task lists, code blocks, links, images, and HTML rendering
 

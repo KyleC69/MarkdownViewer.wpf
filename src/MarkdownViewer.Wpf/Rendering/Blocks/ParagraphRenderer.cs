@@ -1,9 +1,10 @@
+using System.Windows;
 using System.Windows.Controls;
 
 using Markdig.Syntax;
 
+using MarkdownViewer.Wpf.Controls;
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf.Rendering.Blocks;
 
@@ -14,7 +15,11 @@ public sealed class ParagraphRenderer : IBlockRenderer<ParagraphBlock>
         ArgumentNullException.ThrowIfNull(block);
         ArgumentNullException.ThrowIfNull(context);
 
-        TextBlock textBlock = RenderHelpers.CreateTextBlock(context, ThemeKeys.ParagraphStyle);
+        ParagraphTextBlock textBlock = new()
+        {
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 0, 0, 12),
+        };
         RenderHelpers.AppendInlines(textBlock.Inlines, block.Inline, context);
         return textBlock;
     }

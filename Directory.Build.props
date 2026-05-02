@@ -1,0 +1,55 @@
+﻿<Project>
+
+	<!-- Compute minutes since Jan 1 of the current year -->
+	<PropertyGroup>
+		<!-- Current UTC time -->
+		<Now>$([System.DateTime]::UtcNow)</Now>
+
+		<!-- Extract year as integer -->
+		<CurrentYear>$([System.DateTime]::Parse('$(Now)').Year)</CurrentYear>
+
+		<!-- Construct Jan 1 of the current year -->
+		<StartOfYear>$([System.DateTime]::Parse('$(CurrentYear)-01-01T00:00:00Z'))</StartOfYear>
+
+		<!-- Compute the TimeSpan between now and Jan 1 -->
+		<Span>$([System.DateTime]::Parse('$(Now)').Subtract($([System.DateTime]::Parse('$(StartOfYear)'))))</Span>
+
+		<!-- Extract total hours (MSBuild-safe) -->
+		<HoursSinceYearStart>$([System.Int64]::Parse($([System.TimeSpan]::Parse('$(Span)').TotalHours.ToString("0"))))</HoursSinceYearStart>
+	</PropertyGroup>
+
+	<!-- Apply versioning -->
+	<PropertyGroup>
+		<!-- Visible version -->
+		<Version>2.0.$(HoursSinceYearStart)</Version>
+
+		<!-- Assembly/File versions must be <= 65535 per segment -->
+		<AssemblyVersion>2.0.$(HoursSinceYearStart).1</AssemblyVersion>
+		<FileVersion>2.0.1.$(HoursSinceYearStart)</FileVersion>
+	</PropertyGroup>
+
+
+
+
+
+
+
+
+
+
+	<Target Name="CopyBuildOutputToReleases" AfterTargets="Pack">
+		<ItemGroup>
+			<BuildOutputFiles Include="$(PackOutputFolder)\**\*.*" />
+			<PackedSource Include="$(PackOutputFolder)\**\*.*" />
+		</ItemGroup>
+
+		<MakeDir Directories="$(ReleaseCopyOutputDir)" />
+		<MakeDir Directories="$(PackOutputFolder)" />
+		<Copy SourceFiles="@(BuildOutputFiles)" DestinationFolder="F:\Released\$(ProjectName)" SkipUnchangedFiles="false" />
+		<Copy SourceFiles="@(PackedSource)" DestinationFolder="$(ReleaseCopyOutputDir)" SkipUnchangedFiles="false" />
+		<Message Text="Package and build output copied to $(ReleaseCopyOutputDir)" Importance="High" />
+	</Target>
+
+
+
+</Project>

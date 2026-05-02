@@ -10,7 +10,7 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 
 using MarkdownViewer.Wpf.Rendering.Html;
-using MarkdownViewer.Wpf.Theming;
+using MarkdownViewer.Wpf;
 
 namespace MarkdownViewer.Wpf.Core;
 
@@ -38,17 +38,12 @@ internal static class RenderHelpers
         }
     }
 
-    public static StackPanel RenderChildBlocks(ContainerBlock container, IRenderContext context, string? styleKey = null)
+    public static StackPanel RenderChildBlocks(ContainerBlock container, IRenderContext context)
     {
         StackPanel panel = new()
         {
             Orientation = Orientation.Vertical,
         };
-
-        if (!string.IsNullOrWhiteSpace(styleKey))
-        {
-            ApplyRole(panel, styleKey);
-        }
 
         foreach (Markdig.Syntax.Block child in container)
         {
@@ -58,23 +53,12 @@ internal static class RenderHelpers
         return panel;
     }
 
-    public static TextBlock CreateTextBlock(IRenderContext context, string styleKey)
+    public static TextBlock CreateTextBlock(IRenderContext context)
     {
-        TextBlock textBlock = new()
+        return new TextBlock
         {
             TextWrapping = TextWrapping.Wrap,
         };
-
-        ApplyRole(textBlock, styleKey);
-        return textBlock;
-    }
-
-    public static void ApplyRole(DependencyObject dependencyObject, string role)
-    {
-        ArgumentNullException.ThrowIfNull(dependencyObject);
-        ArgumentException.ThrowIfNullOrWhiteSpace(role);
-
-        MarkdownTheming.SetRole(dependencyObject, role);
     }
 
     public static string GetLiteral(LeafBlock block)
@@ -88,13 +72,11 @@ internal static class RenderHelpers
         ArgumentNullException.ThrowIfNull(resources);
 
         Border border = new();
-        ApplyRole(border, ThemeKeys.DiagnosticsLabelBorderStyle);
 
         TextBlock textBlock = new()
         {
             Text = text,
         };
-        ApplyRole(textBlock, ThemeKeys.DiagnosticsLabelTextStyle);
         border.Child = textBlock;
         return border;
     }

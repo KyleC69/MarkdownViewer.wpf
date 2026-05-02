@@ -1,21 +1,25 @@
 using System.Windows.Documents;
+using System.Windows.Media;
 
 using Markdig.Syntax.Inlines;
 
+using MarkdownViewer.Wpf.Controls;
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf.Rendering.Inlines;
 
 public sealed class CodeInlineRenderer : IInlineRenderer<CodeInline>
 {
+    private static readonly FontFamily MonospaceFont = new("Consolas, Courier New");
+
     public System.Windows.Documents.Inline Render(CodeInline inline, IRenderContext context)
     {
         ArgumentNullException.ThrowIfNull(inline);
         ArgumentNullException.ThrowIfNull(context);
 
-        Run run = new(inline.Content);
-        RenderHelpers.ApplyRole(run, ThemeKeys.CodeInlineStyle);
-        return run;
+        // Use custom Span type for implicit styling
+        CodeInlineSpan span = new();
+        span.Inlines.Add(new Run(inline.Content) { FontFamily = MonospaceFont });
+        return span;
     }
 }

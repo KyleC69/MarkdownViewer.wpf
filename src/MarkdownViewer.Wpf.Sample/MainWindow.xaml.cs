@@ -1,73 +1,74 @@
+﻿// Build Date: 2026/05/01
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.WPF.Sample
+// File:         MainWindow.xaml.cs
+// Author: Kyle L. Crowder
+// Build Num: 212740
+
+
+
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
-using MarkdownViewer.Wpf.Theming;
+
+
 
 namespace MarkdownViewer.Wpf.Sample;
+
+
+
+
 
 public partial class MainWindow : Window, INotifyPropertyChanged
 {
     private const string SampleImageToken = "{{SampleImageUri}}";
 
-    private string markdownText = string.Empty;
-    private string selectedThemeKey = "Default";
+
+
+
+
+
+
 
     public MainWindow()
     {
         InitializeComponent();
-        ThemeOptions = ["Default", "Light", "Dark"];
         DataContext = this;
         LoadSampleMarkdown();
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    public IReadOnlyList<string> ThemeOptions { get; }
+
+
+
+
+
 
     public string MarkdownText
     {
-        get => markdownText;
+        get;
         set
         {
-            if (markdownText == value)
+            if (field == value)
             {
                 return;
             }
 
-            markdownText = value;
+            field = value;
             OnPropertyChanged();
         }
-    }
+    } = string.Empty;
 
-    public string SelectedThemeKey
-    {
-        get => selectedThemeKey;
-        set
-        {
-            if (selectedThemeKey == value)
-            {
-                return;
-            }
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-            selectedThemeKey = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(CurrentTheme));
-        }
-    }
 
-    public ITheme CurrentTheme => SelectedThemeKey switch
-    {
-        "Light" => new LightTheme(),
-        "Dark" => new DarkTheme(),
-        _ => new DefaultTheme(),
-    };
 
-    private void ReloadSampleMarkdown_Click(object sender, RoutedEventArgs e)
-    {
-        LoadSampleMarkdown();
-    }
+
+
+
+
 
     private void LoadSampleMarkdown()
     {
@@ -78,6 +79,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         string imageUri = new Uri(imagePath, UriKind.Absolute).AbsoluteUri;
         MarkdownText = content.Replace(SampleImageToken, imageUri, StringComparison.Ordinal);
     }
+
+
+
+
+
+
+
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {

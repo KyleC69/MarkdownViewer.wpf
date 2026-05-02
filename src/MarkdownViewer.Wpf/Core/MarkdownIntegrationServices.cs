@@ -1,4 +1,5 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -73,6 +74,16 @@ internal static class MarkdownIntegrationServices
     {
         public ImageSource? ResolveImageSource(Uri uri, IRenderContext context)
         {
+            if (IsUnresolvedTemplateToken(uri))
+            {
+                return null;
+            }
+
+            if (!uri.IsAbsoluteUri && IsLikelyMissingLocalFile(uri))
+            {
+                return null;
+            }
+
             BitmapImage bitmap = new();
             bitmap.BeginInit();
             bitmap.CacheOption = BitmapCacheOption.OnLoad;
@@ -85,6 +96,35 @@ internal static class MarkdownIntegrationServices
             }
 
             return bitmap;
+        }
+
+        private static bool IsUnresolvedTemplateToken(Uri uri)
+        {
+            string value = uri.OriginalString;
+            return value.Contains("{{", StringComparison.Ordinal)
+                && value.Contains("}}", StringComparison.Ordinal);
+        }
+
+        private static bool IsLikelyMissingLocalFile(Uri uri)
+        {
+            string value = uri.OriginalString;
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return true;
+            }
+
+            if (value.StartsWith("pack://", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (value.StartsWith("/", StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            string candidatePath = Path.Combine(AppContext.BaseDirectory, value);
+            return !File.Exists(candidatePath);
         }
     }
 

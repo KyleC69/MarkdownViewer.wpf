@@ -1,16 +1,22 @@
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 using Markdig.Syntax;
 
+using MarkdownViewer.Wpf.Controls;
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf.Rendering.Blocks;
 
 public class CodeBlockRenderer : IBlockRenderer<CodeBlock>
 {
+    private const string DefaultLanguageLabel = "text";
+    private const string CopyButtonLabel = "Copy";
+    private const string CopiedButtonLabel = "Copied";
+
     public virtual UIElement Render(CodeBlock block, IRenderContext context)
     {
         ArgumentNullException.ThrowIfNull(block);
@@ -26,70 +32,81 @@ public class CodeBlockRenderer : IBlockRenderer<CodeBlock>
 
     internal static Border CreateCodeBlock(string code, IRenderContext context, string? language)
     {
-        Border border = new();
-        RenderHelpers.ApplyRole(border, ThemeKeys.CodeBlockBorderStyle);
+        CodeBlockBorder border = new()
+        {
+            Margin = new Thickness(0, 0, 0, 12),
+            BorderThickness = new Thickness(1),
+            BorderBrush = SystemColors.ControlDarkBrush,
+            Background = SystemColors.ControlLightLightBrush,
+            CornerRadius = new CornerRadius(6),
+            SnapsToDevicePixels = true,
+        };
 
         Grid grid = new();
-        if (!string.IsNullOrWhiteSpace(language))
-        {
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        }
-
+        grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-        if (!string.IsNullOrWhiteSpace(language))
+        CodeBlockHeaderPanel header = new()
         {
-            DockPanel header = new()
-            {
-                LastChildFill = false,
-            };
-            RenderHelpers.ApplyRole(header, ThemeKeys.CodeBlockHeaderPanelStyle);
+            LastChildFill = false,
+        };
 
-            TextBlock headerText = new()
-            {
-                Text = language,
-                VerticalAlignment = VerticalAlignment.Center,
-            };
-            RenderHelpers.ApplyRole(headerText, ThemeKeys.CodeBlockHeaderTextStyle);
-            DockPanel.SetDock(headerText, Dock.Left);
+        CodeBlockHeaderTextBlock headerText = new()
+        {
+            Text = string.IsNullOrWhiteSpace(language) ? DefaultLanguageLabel : language,
+            VerticalAlignment = VerticalAlignment.Center,
+            FontFamily = new FontFamily("Consolas, Courier New"),
+            FontSize = 12,
+            FontWeight = FontWeights.SemiBold,
+        };
+        DockPanel.SetDock(headerText, Dock.Left);
 
-            Button copyButton = new()
+        CodeBlockCopyButton copyButton = new()
+        {
+            Content = CopyButtonLabel,
+            Tag = code,
+            Padding = new Thickness(8, 2, 8, 2),
+            Margin = new Thickness(12, 0, 0, 0),
+        };
+        copyButton.Click += static (_, args) =>
+        {
+            if (args.Source is Button button && button.Tag is string text)
             {
-                Content = "Copy",
-                HorizontalAlignment = HorizontalAlignment.Right,
-                Tag = code,
-            };
-            RenderHelpers.ApplyRole(copyButton, ThemeKeys.CodeBlockCopyButtonStyle);
-            copyButton.Click += static (_, args) =>
-            {
-                if (args.Source is Button button && button.Tag is string text)
-                {
-                    Clipboard.SetText(text);
-                }
-            };
-            DockPanel.SetDock(copyButton, Dock.Right);
+                Clipboard.SetText(text);
+                ShowCopyConfirmationAsync(button);
+            }
+        };
+        DockPanel.SetDock(copyButton, Dock.Right);
 
-            header.Children.Add(headerText);
-            header.Children.Add(copyButton);
-            Grid.SetRow(header, 0);
-            grid.Children.Add(header);
-        }
+        header.Children.Add(headerText);
+        header.Children.Add(copyButton);
 
-        TextBlock textBlock = new()
+        CodeBlockHeaderBorder headerBorder = new()
+        {
+            Child = header,
+            Background = SystemColors.ControlLightBrush,
+            BorderBrush = SystemColors.ControlDarkBrush,
+            BorderThickness = new Thickness(0, 0, 0, 1),
+            Padding = new Thickness(10, 6, 10, 6),
+        };
+        Grid.SetRow(headerBorder, 0);
+        grid.Children.Add(headerBorder);
+
+        CodeBlockTextBlock textBlock = new()
         {
             Text = code,
             TextWrapping = TextWrapping.NoWrap,
+            FontFamily = new FontFamily("Consolas, Courier New"),
+            Margin = new Thickness(10, 8, 10, 10),
         };
-        RenderHelpers.ApplyRole(textBlock, ThemeKeys.CodeBlockTextStyle);
 
-        ScrollViewer scrollViewer = new()
+        CodeBlockScrollViewer scrollViewer = new()
         {
             Content = textBlock,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
         };
-        RenderHelpers.ApplyRole(scrollViewer, ThemeKeys.CodeBlockScrollViewerStyle);
-        Grid.SetRow(scrollViewer, string.IsNullOrWhiteSpace(language) ? 0 : 1);
+        Grid.SetRow(scrollViewer, 1);
         grid.Children.Add(scrollViewer);
 
         border.Child = grid;
@@ -106,5 +123,24 @@ public class CodeBlockRenderer : IBlockRenderer<CodeBlock>
 
         string info = property.GetValue(block)?.ToString()?.Trim() ?? string.Empty;
         return string.IsNullOrWhiteSpace(info) ? null : info;
+    }
+
+    private static async void ShowCopyConfirmationAsync(Button button)
+    {
+        ArgumentNullException.ThrowIfNull(button);
+
+        object? previousContent = button.Content;
+        bool previousEnabledState = button.IsEnabled;
+
+        button.Content = CopiedButtonLabel;
+        button.IsEnabled = false;
+
+        await Task.Delay(1200).ConfigureAwait(false);
+
+        await button.Dispatcher.InvokeAsync(() =>
+        {
+            button.Content = previousContent;
+            button.IsEnabled = previousEnabledState;
+        });
     }
 }

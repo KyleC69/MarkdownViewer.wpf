@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
+using MarkdownViewer.Wpf.Rendering;
 
 namespace MarkdownViewer.Wpf.Diagnostics;
 
@@ -11,6 +11,8 @@ public sealed class DiagnosticsOverlayPostProcessor : IPostProcessor
 {
     private const string OverlayTag = nameof(DiagnosticsOverlayPostProcessor);
     private const string OverlayLabelTag = nameof(DiagnosticsOverlayPostProcessor) + ".Label";
+    private const string OverlayBorderBrushKey = "DiagnosticsOverlayBorderBrush";
+    private const string OverlayBorderThicknessKey = "DiagnosticsOverlayBorderThickness";
 
     public void Process(UIElement root, IRenderContext context)
     {
@@ -33,9 +35,10 @@ public sealed class DiagnosticsOverlayPostProcessor : IPostProcessor
         {
             if (border.BorderBrush is null)
             {
-                if (WpfResourceLookup.TryFindResource(context.Resources, ThemeKeys.DiagnosticsOverlayBorderBrush) is Brush)
+                if (context.Resources.Contains(OverlayBorderBrushKey)
+                    && context.Resources[OverlayBorderBrushKey] is Brush themeBorderBrush)
                 {
-                    border.SetResourceReference(Border.BorderBrushProperty, ThemeKeys.DiagnosticsOverlayBorderBrush);
+                    border.BorderBrush = themeBorderBrush;
                 }
                 else
                 {
@@ -45,9 +48,10 @@ public sealed class DiagnosticsOverlayPostProcessor : IPostProcessor
 
             if (border.BorderThickness == default)
             {
-                if (WpfResourceLookup.TryFindResource(context.Resources, ThemeKeys.DiagnosticsOverlayBorderThickness) is Thickness)
+                if (context.Resources.Contains(OverlayBorderThicknessKey)
+                    && context.Resources[OverlayBorderThicknessKey] is Thickness themeBorderThickness)
                 {
-                    border.SetResourceReference(Border.BorderThicknessProperty, ThemeKeys.DiagnosticsOverlayBorderThickness);
+                    border.BorderThickness = themeBorderThickness;
                 }
                 else
                 {

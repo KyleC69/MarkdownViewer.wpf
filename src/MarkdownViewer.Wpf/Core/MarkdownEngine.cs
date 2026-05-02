@@ -1,13 +1,29 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿// Build Date: 2026/05/01
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         MarkdownEngine.cs
+// Author: Kyle L. Crowder
+// Build Num: 125638
+
+
+
+using System.Windows;
+using System.Collections;
 
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
 using Markdig.Syntax;
 
-using MarkdownViewer.Wpf.Theming;
+using MarkdownViewer.Wpf.Controls;
+
+
+
 
 namespace MarkdownViewer.Wpf.Core;
+
+
+
+
 
 public sealed class MarkdownEngine
 {
@@ -15,10 +31,23 @@ public sealed class MarkdownEngine
     private readonly MarkdownPipeline pipeline;
     private readonly IReadOnlyList<IPostProcessor> postProcessors;
 
-    public MarkdownEngine(MarkdownPipeline pipeline, RendererDispatcher dispatcher)
-        : this(pipeline, dispatcher, Array.Empty<IPostProcessor>())
+
+
+
+
+
+
+
+    public MarkdownEngine(MarkdownPipeline pipeline, RendererDispatcher dispatcher) : this(pipeline, dispatcher, Array.Empty<IPostProcessor>())
     {
     }
+
+
+
+
+
+
+
 
     internal MarkdownEngine(MarkdownPipeline pipeline, RendererDispatcher dispatcher, IReadOnlyList<IPostProcessor> postProcessors)
     {
@@ -27,25 +56,49 @@ public sealed class MarkdownEngine
         this.postProcessors = postProcessors ?? throw new ArgumentNullException(nameof(postProcessors));
     }
 
+
+
+
+
+
+
+
+    public static MarkdownEngine CreateDefault()
+    {
+        MarkdownRendererBuilder builder = MarkdownRendererBuilder.CreateDefault();
+        return new MarkdownEngine(CreateDefaultPipeline(), builder.BuildDispatcher(), builder.BuildPostProcessors());
+    }
+
+
+
+
+
+
+
+
+    public static MarkdownPipeline CreateDefaultPipeline()
+    {
+        return new MarkdownPipelineBuilder().UseEmphasisExtras().UseAutoIdentifiers(AutoIdentifierOptions.GitHub).UsePipeTables().UseGridTables().UseTaskLists().UseAutoLinks().Build();
+    }
+
+
+
+
+
+
+
+
     public UIElement Render(string markdown, IServiceProvider services, ResourceDictionary? themeResources = null)
     {
         ArgumentNullException.ThrowIfNull(markdown);
         ArgumentNullException.ThrowIfNull(services);
 
-        MarkdownDocument document = Markdig.Markdown.Parse(markdown, pipeline);
+        MarkdownDocument document = Markdown.Parse(markdown, pipeline);
         ResourceDictionary effectiveThemeResources = themeResources ?? new ResourceDictionary();
         ResourceDictionary scopedResources = new();
-        if (effectiveThemeResources.Count > 0 || effectiveThemeResources.MergedDictionaries.Count > 0)
-        {
-            scopedResources.MergedDictionaries.Add(effectiveThemeResources);
-        }
+        MergeThemeResources(scopedResources, effectiveThemeResources);
 
-        StackPanel root = new()
-        {
-            Orientation = Orientation.Vertical,
-            Resources = scopedResources,
-        };
-        RenderHelpers.ApplyRole(root, ThemeKeys.RootPanelStyle);
+        MarkdownRootPanel root = new() { Resources = scopedResources };
 
         RenderContext context = new(dispatcher, effectiveThemeResources, scopedResources, services, postProcessors);
         foreach (Block block in document)
@@ -61,21 +114,16 @@ public sealed class MarkdownEngine
         return root;
     }
 
-    public static MarkdownPipeline CreateDefaultPipeline()
+    internal static void MergeThemeResources(ResourceDictionary target, ResourceDictionary source)
     {
-        return new MarkdownPipelineBuilder()
-            .UseEmphasisExtras()
-            .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
-            .UsePipeTables()
-            .UseGridTables()
-            .UseTaskLists()
-            .UseAutoLinks()
-            .Build();
-    }
+        foreach (DictionaryEntry entry in source)
+        {
+            target[entry.Key] = entry.Value;
+        }
 
-    public static MarkdownEngine CreateDefault()
-    {
-        MarkdownRendererBuilder builder = MarkdownRendererBuilder.CreateDefault();
-        return new MarkdownEngine(CreateDefaultPipeline(), builder.BuildDispatcher(), builder.BuildPostProcessors());
+        foreach (ResourceDictionary mergedDictionary in source.MergedDictionaries)
+        {
+            target.MergedDictionaries.Add(mergedDictionary);
+        }
     }
 }

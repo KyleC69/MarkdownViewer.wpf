@@ -4,7 +4,6 @@ using System.Windows.Documents;
 using Markdig.Extensions.TaskLists;
 
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf.Rendering.Inlines;
 

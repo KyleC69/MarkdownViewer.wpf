@@ -8,7 +8,6 @@ namespace MarkdownViewer.Wpf;
 
 public class MarkdownView : Control
 {
-    private ResourceDictionary? appliedThemeResources;
     private static readonly DependencyPropertyKey RenderedContentPropertyKey = DependencyProperty.RegisterReadOnly(
         nameof(RenderedContent),
         typeof(UIElement),
@@ -42,11 +41,6 @@ public class MarkdownView : Control
     static MarkdownView()
     {
         DefaultStyleKeyProperty.OverrideMetadata(typeof(MarkdownView), new FrameworkPropertyMetadata(typeof(MarkdownView)));
-    }
-
-    public MarkdownView()
-    {
-        EnsureThemeResources();
     }
 
     public string? Markdown
@@ -92,7 +86,6 @@ public class MarkdownView : Control
     internal void RefreshContent()
     {
         refreshPending = false;
-        EnsureThemeResources();
 
         if (string.IsNullOrWhiteSpace(Markdown))
         {
@@ -103,25 +96,6 @@ public class MarkdownView : Control
         RenderedContent = DefaultEngine.Render(
             Markdown,
             Services ?? EmptyServiceProvider.Instance,
-            ResolveThemeResources());
-    }
-
-    private void EnsureThemeResources()
-    {
-        if (appliedThemeResources is not null)
-        {
-            Resources.MergedDictionaries.Remove(appliedThemeResources);
-        }
-
-        appliedThemeResources = ResolveThemeResources();
-        if (appliedThemeResources is not null)
-        {
-            Resources.MergedDictionaries.Add(appliedThemeResources);
-        }
-    }
-
-    private ResourceDictionary? ResolveThemeResources()
-    {
-        return ThemeResources;
+            ThemeResources);
     }
 }

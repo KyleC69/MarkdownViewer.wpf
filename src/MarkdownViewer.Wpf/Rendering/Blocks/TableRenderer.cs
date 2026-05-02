@@ -3,8 +3,8 @@ using System.Windows.Controls;
 
 using Markdig.Extensions.Tables;
 
+using MarkdownViewer.Wpf.Controls;
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Theming;
 
 namespace MarkdownViewer.Wpf.Rendering.Blocks;
 
@@ -15,8 +15,7 @@ public sealed class TableRenderer : IBlockRenderer<Table>
         ArgumentNullException.ThrowIfNull(table);
         ArgumentNullException.ThrowIfNull(context);
 
-        Grid grid = new();
-        RenderHelpers.ApplyRole(grid, ThemeKeys.TableStyle);
+        TableGrid grid = new();
 
         int columnCount = table.ColumnDefinitions.Count;
         if (columnCount == 0)
@@ -38,8 +37,12 @@ public sealed class TableRenderer : IBlockRenderer<Table>
             for (int cellIndex = 0; cellIndex < row.Count; cellIndex++)
             {
                 TableCell cell = (TableCell)row[cellIndex];
-                Border border = new();
-                RenderHelpers.ApplyRole(border, row.IsHeader ? ThemeKeys.TableHeaderCellBorderStyle : ThemeKeys.TableCellBorderStyle);
+                TableCellBorder border = new()
+                {
+                    BorderThickness = new Thickness(1),
+                    BorderBrush = SystemColors.ControlDarkBrush,
+                    Padding = new Thickness(8, 4, 8, 4),
+                };
                 border.Child = RenderHelpers.RenderChildBlocks(cell, context);
                 Grid.SetRow(border, rowIndex);
                 Grid.SetColumn(border, Math.Min(cellIndex, Math.Max(0, columnCount - 1)));
