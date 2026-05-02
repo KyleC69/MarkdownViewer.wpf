@@ -1,14 +1,20 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         MarkdownDiagnosticEventArgs.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 namespace MarkdownViewer.Wpf.Diagnostics;
+
+
+
+
 
 public sealed class MarkdownDiagnosticEventArgs : EventArgs
 {
-    public MarkdownDiagnosticEventArgs(
-        MarkdownDiagnosticKind kind,
-        string message,
-        Type? nodeType = null,
-        string? key = null,
-        TimeSpan? duration = null,
-        Exception? exception = null)
+    public MarkdownDiagnosticEventArgs(MarkdownDiagnosticKind kind, string message, Type? nodeType = null, string? key = null, TimeSpan? duration = null, Exception? exception = null)
     {
         Kind = kind;
         Message = message ?? throw new ArgumentNullException(nameof(message));
@@ -17,6 +23,13 @@ public sealed class MarkdownDiagnosticEventArgs : EventArgs
         Duration = duration;
         Exception = exception;
     }
+
+
+
+
+
+
+
 
     public TimeSpan? Duration { get; }
 

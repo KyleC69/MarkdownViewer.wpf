@@ -1,11 +1,24 @@
-using System.Windows.Documents;
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         HtmlInlineRenderer.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
 
 using Markdig.Syntax.Inlines;
 
 using MarkdownViewer.Wpf.Core;
 using MarkdownViewer.Wpf.Rendering.Html;
 
+
+
+
 namespace MarkdownViewer.Wpf.Rendering.Inlines;
+
+
+
+
 
 public sealed class HtmlInlineRenderer : IInlineRenderer<HtmlInline>
 {

@@ -1,5 +1,12 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf.Tests
+// File:         CodeInlineRendererTests.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Windows.Documents;
-using System.Windows.Media;
 
 using Markdig.Syntax.Inlines;
 
@@ -9,33 +16,26 @@ using MarkdownViewer.Wpf.Rendering.Inlines;
 
 using Xunit;
 
+
+
+
 namespace MarkdownViewer.Wpf.Tests;
+
+
+
+
 
 public sealed class CodeInlineRendererTests
 {
-    private readonly CodeInlineRenderer renderer = new();
     private readonly RenderContext context = MarkdownTestHelper.CreateContext();
+    private readonly CodeInlineRenderer renderer = new();
 
-    [Fact]
-    public void Render_ReturnsCodeInlineSpan()
-    {
-        CodeInline inline = MarkdownTestHelper.FindFirstInline<CodeInline>("Use `var x = 1;` here");
 
-        System.Windows.Documents.Inline result = renderer.Render(inline, context);
 
-        Assert.IsType<CodeInlineSpan>(result);
-    }
 
-    [Fact]
-    public void Render_ContainsRunWithCorrectText()
-    {
-        CodeInline inline = MarkdownTestHelper.FindFirstInline<CodeInline>("Use `var x = 1;` here");
 
-        CodeInlineSpan span = Assert.IsType<CodeInlineSpan>(renderer.Render(inline, context));
 
-        Run run = Assert.IsType<Run>(span.Inlines.FirstInline);
-        Assert.Equal("var x = 1;", run.Text);
-    }
+
 
     [Fact]
     public void Render_AppliesMonospaceFont_ToInnerRun()
@@ -49,19 +49,30 @@ public sealed class CodeInlineRendererTests
         Assert.Contains("Consolas", run.FontFamily.Source);
     }
 
-    [Fact]
-    public void Render_Throws_WhenInlineIsNull()
-    {
-        Assert.Throws<ArgumentNullException>(() => renderer.Render(null!, context));
-    }
+
+
+
+
+
+
 
     [Fact]
-    public void Render_Throws_WhenContextIsNull()
+    public void Render_ContainsRunWithCorrectText()
     {
-        CodeInline inline = MarkdownTestHelper.FindFirstInline<CodeInline>("Use `code` here");
+        CodeInline inline = MarkdownTestHelper.FindFirstInline<CodeInline>("Use `var x = 1;` here");
 
-        Assert.Throws<ArgumentNullException>(() => renderer.Render(inline, null!));
+        CodeInlineSpan span = Assert.IsType<CodeInlineSpan>(renderer.Render(inline, context));
+
+        Run run = Assert.IsType<Run>(span.Inlines.FirstInline);
+        Assert.Equal("var x = 1;", run.Text);
     }
+
+
+
+
+
+
+
 
     [Theory]
     [InlineData("Use `x` in code", "x")]
@@ -75,5 +86,50 @@ public sealed class CodeInlineRendererTests
 
         Run run = Assert.IsType<Run>(span.Inlines.FirstInline);
         Assert.Equal(expectedCode, run.Text);
+    }
+
+
+
+
+
+
+
+
+    [Fact]
+    public void Render_ReturnsCodeInlineSpan()
+    {
+        CodeInline inline = MarkdownTestHelper.FindFirstInline<CodeInline>("Use `var x = 1;` here");
+
+        System.Windows.Documents.Inline result = renderer.Render(inline, context);
+
+        Assert.IsType<CodeInlineSpan>(result);
+    }
+
+
+
+
+
+
+
+
+    [Fact]
+    public void Render_Throws_WhenContextIsNull()
+    {
+        CodeInline inline = MarkdownTestHelper.FindFirstInline<CodeInline>("Use `code` here");
+
+        Assert.Throws<ArgumentNullException>(() => renderer.Render(inline, null!));
+    }
+
+
+
+
+
+
+
+
+    [Fact]
+    public void Render_Throws_WhenInlineIsNull()
+    {
+        Assert.Throws<ArgumentNullException>(() => renderer.Render(null!, context));
     }
 }

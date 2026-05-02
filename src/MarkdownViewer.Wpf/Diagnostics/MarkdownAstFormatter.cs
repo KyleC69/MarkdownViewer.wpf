@@ -1,24 +1,27 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         MarkdownAstFormatter.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Text;
 
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 
+
+
+
 namespace MarkdownViewer.Wpf.Diagnostics;
+
+
+
+
 
 public static class MarkdownAstFormatter
 {
-    public static string Format(MarkdownDocument document)
-    {
-        ArgumentNullException.ThrowIfNull(document);
-
-        StringBuilder builder = new();
-        foreach (Block block in document)
-        {
-            AppendBlock(builder, block, 0);
-        }
-
-        return builder.ToString().TrimEnd();
-    }
 
     private static void AppendBlock(StringBuilder builder, Block block, int depth)
     {
@@ -39,6 +42,13 @@ public static class MarkdownAstFormatter
         }
     }
 
+
+
+
+
+
+
+
     private static void AppendInline(StringBuilder builder, ContainerInline container, int depth)
     {
         for (Inline? current = container.FirstChild; current is not null; current = current.NextSibling)
@@ -51,5 +61,25 @@ public static class MarkdownAstFormatter
                 AppendInline(builder, nested, depth + 1);
             }
         }
+    }
+
+
+
+
+
+
+
+
+    public static string Format(MarkdownDocument document)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+
+        StringBuilder builder = new();
+        foreach (Block block in document)
+        {
+            AppendBlock(builder, block, 0);
+        }
+
+        return builder.ToString().TrimEnd();
     }
 }

@@ -1,4 +1,11 @@
-using System.Diagnostics;
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         LinkInlineRenderer.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Windows.Controls;
 using System.Windows.Documents;
 
@@ -6,7 +13,14 @@ using Markdig.Syntax.Inlines;
 
 using MarkdownViewer.Wpf.Core;
 
+
+
+
 namespace MarkdownViewer.Wpf.Rendering.Inlines;
+
+
+
+
 
 public sealed class LinkInlineRenderer : IInlineRenderer<LinkInline>
 {
@@ -15,7 +29,7 @@ public sealed class LinkInlineRenderer : IInlineRenderer<LinkInline>
         ArgumentNullException.ThrowIfNull(inline);
         ArgumentNullException.ThrowIfNull(context);
 
-        string? url = inline.GetDynamicUrl?.Invoke() ?? inline.Url;
+        var url = inline.GetDynamicUrl?.Invoke() ?? inline.Url;
         if (inline.IsImage)
         {
             return RenderImage(url, context);
@@ -36,6 +50,13 @@ public sealed class LinkInlineRenderer : IInlineRenderer<LinkInline>
         RenderHelpers.AppendInlines(hyperlink.Inlines, inline, context);
         return hyperlink;
     }
+
+
+
+
+
+
+
 
     internal static System.Windows.Documents.Inline RenderImage(string? url, IRenderContext context)
     {

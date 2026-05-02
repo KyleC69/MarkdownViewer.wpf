@@ -1,9 +1,8 @@
-﻿// Build Date: 2026/05/01
-// Solution: MarkdownViewer.Wpf
+﻿// Solution: MarkdownViewer.Wpf
 // Project:   MarkdownViewer.Wpf
 // File:         MarkdownElementTypes.cs
 // Author: Kyle L. Crowder
-// Build Num: 130209
+// Build Date: 2026/05/02
 
 
 

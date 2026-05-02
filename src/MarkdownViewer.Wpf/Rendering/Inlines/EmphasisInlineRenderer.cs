@@ -1,3 +1,11 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         EmphasisInlineRenderer.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Windows;
 using System.Windows.Documents;
 
@@ -6,7 +14,14 @@ using Markdig.Syntax.Inlines;
 using MarkdownViewer.Wpf.Controls;
 using MarkdownViewer.Wpf.Core;
 
+
+
+
 namespace MarkdownViewer.Wpf.Rendering.Inlines;
+
+
+
+
 
 public sealed class EmphasisInlineRenderer : IInlineRenderer<EmphasisInline>
 {
@@ -17,14 +32,14 @@ public sealed class EmphasisInlineRenderer : IInlineRenderer<EmphasisInline>
 
         Span span = inline.DelimiterChar switch
         {
-            '*' or '_' when inline.DelimiterCount >= 2 => new Bold(),
-            '*' or '_' => new Italic(),
-            '~' when inline.DelimiterCount >= 2 => new StrikeThroughSpan { TextDecorations = TextDecorations.Strikethrough },
-            '~' => new SubscriptSpan { Typography = { Variants = FontVariants.Subscript } },
-            '^' => new SuperscriptSpan { Typography = { Variants = FontVariants.Superscript } },
-            '+' => new InsertedSpan { TextDecorations = TextDecorations.Underline },
-            '=' => new MarkedSpan(),
-            _ => new Span(),
+                '*' or '_' when inline.DelimiterCount >= 2 => new Bold(),
+                '*' or '_' => new Italic(),
+                '~' when inline.DelimiterCount >= 2 => new StrikeThroughSpan { TextDecorations = TextDecorations.Strikethrough },
+                '~' => new SubscriptSpan { Typography = { Variants = FontVariants.Subscript } },
+                '^' => new SuperscriptSpan { Typography = { Variants = FontVariants.Superscript } },
+                '+' => new InsertedSpan { TextDecorations = TextDecorations.Underline },
+                '=' => new MarkedSpan(),
+                _ => new Span()
         };
 
         RenderHelpers.AppendInlines(span.Inlines, inline, context);

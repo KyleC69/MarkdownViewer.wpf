@@ -1,4 +1,16 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         MarkdownDiagnosticKind.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 namespace MarkdownViewer.Wpf.Diagnostics;
+
+
+
+
 
 public enum MarkdownDiagnosticKind
 {
@@ -7,5 +19,5 @@ public enum MarkdownDiagnosticKind
     InlineRendered,
     ImageLoadFailed,
     LinkNavigationFailed,
-    HtmlInlineIgnored,
+    HtmlInlineIgnored
 }

@@ -1,19 +1,26 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         MarkdownRenderTreeFormatter.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
+
+
+
 namespace MarkdownViewer.Wpf.Diagnostics;
+
+
+
+
 
 public static class MarkdownRenderTreeFormatter
 {
-    public static string Format(UIElement root)
-    {
-        ArgumentNullException.ThrowIfNull(root);
-
-        StringBuilder builder = new();
-        AppendElement(builder, root, 0);
-        return builder.ToString().TrimEnd();
-    }
 
     private static void AppendElement(StringBuilder builder, UIElement element, int depth)
     {
@@ -27,6 +34,7 @@ public static class MarkdownRenderTreeFormatter
                 {
                     AppendElement(builder, child, depth + 1);
                 }
+
                 break;
             case Decorator decorator when decorator.Child is UIElement child:
                 AppendElement(builder, child, depth + 1);
@@ -35,5 +43,21 @@ public static class MarkdownRenderTreeFormatter
                 AppendElement(builder, content, depth + 1);
                 break;
         }
+    }
+
+
+
+
+
+
+
+
+    public static string Format(UIElement root)
+    {
+        ArgumentNullException.ThrowIfNull(root);
+
+        StringBuilder builder = new();
+        AppendElement(builder, root, 0);
+        return builder.ToString().TrimEnd();
     }
 }

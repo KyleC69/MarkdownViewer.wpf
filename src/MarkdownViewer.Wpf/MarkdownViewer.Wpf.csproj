@@ -13,7 +13,7 @@
 
 
 	<PropertyGroup>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 		<Authors>Kyle L. Crowder</Authors>
 		<Description>Deterministic Markdown rendering for WPF using native UI elements.</Description>
 		<PackageId>MarkdownViewer.Wpf</PackageId>
@@ -23,12 +23,12 @@
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageTags>markdown markdig wpf ui</PackageTags>
 		<Title>Markdown Viewer Control for WPF</Title>
-		<Copyright>Kyle L. Crowder</Copyright>
+		<Copyright>Kyle L. Crowder © 2026</Copyright>
 		<PackageIcon>app-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageReleaseNotes>See the GitHub repository for release notes.</PackageReleaseNotes>
 		<NeutralLanguage>en</NeutralLanguage>
-		<ReleaseCopyOutputDir>F:\Packages</ReleaseCopyOutputDir>
-		<PackOutputFolder>\MarkdownViewer.Wpf\bin\Debug</PackOutputFolder>
+		
 	</PropertyGroup>
 
 

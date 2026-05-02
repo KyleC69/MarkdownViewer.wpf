@@ -1,17 +1,27 @@
-﻿using System.Diagnostics;
+﻿// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.WPF.Sample
+// File:         App.xaml.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
+using System.Diagnostics;
 using System.Windows;
 
 using MarkdownViewer.Wpf.Diagnostics;
 
+
+
+
 namespace MarkdownViewer.WPF.Sample;
+
+
+
+
 
 public partial class App : Application
 {
-    protected override void OnStartup(StartupEventArgs e)
-    {
-        base.OnStartup(e);
-        MarkdownDiagnostics.Emitted += OnMarkdownDiagnosticEmitted;
-    }
 
     protected override void OnExit(ExitEventArgs e)
     {
@@ -19,17 +29,37 @@ public partial class App : Application
         base.OnExit(e);
     }
 
+
+
+
+
+
+
+
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
+        MarkdownDiagnostics.Emitted += OnMarkdownDiagnosticEmitted;
+    }
+
+
+
+
+
+
+
+
     private static void OnMarkdownDiagnosticEmitted(object? sender, MarkdownDiagnosticEventArgs args)
     {
-        string prefix = args.Kind switch
+        var prefix = args.Kind switch
         {
-            MarkdownDiagnosticKind.ThemeKeyMissing      => "[MarkdownDiag][THEME]",
-            MarkdownDiagnosticKind.ImageLoadFailed      => "[MarkdownDiag][IMAGE]",
-            MarkdownDiagnosticKind.LinkNavigationFailed => "[MarkdownDiag][LINK]",
-            MarkdownDiagnosticKind.HtmlInlineIgnored    => "[MarkdownDiag][HTML]",
-            MarkdownDiagnosticKind.BlockRendered        => "[MarkdownDiag][BLOCK]",
-            MarkdownDiagnosticKind.InlineRendered       => "[MarkdownDiag][INLINE]",
-            _                                           => "[MarkdownDiag]",
+                MarkdownDiagnosticKind.ThemeKeyMissing => "[MarkdownDiag][THEME]",
+                MarkdownDiagnosticKind.ImageLoadFailed => "[MarkdownDiag][IMAGE]",
+                MarkdownDiagnosticKind.LinkNavigationFailed => "[MarkdownDiag][LINK]",
+                MarkdownDiagnosticKind.HtmlInlineIgnored => "[MarkdownDiag][HTML]",
+                MarkdownDiagnosticKind.BlockRendered => "[MarkdownDiag][BLOCK]",
+                MarkdownDiagnosticKind.InlineRendered => "[MarkdownDiag][INLINE]",
+                _ => "[MarkdownDiag]"
         };
 
         Debug.WriteLine($"{prefix} {args.Message}");
@@ -40,4 +70,3 @@ public partial class App : Application
         }
     }
 }
-

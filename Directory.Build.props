@@ -23,33 +23,30 @@
 		<!-- Visible version -->
 		<Version>2.0.$(HoursSinceYearStart)</Version>
 
-		<!-- Assembly/File versions must be <= 65535 per segment -->
 		<AssemblyVersion>2.0.$(HoursSinceYearStart).1</AssemblyVersion>
 		<FileVersion>2.0.1.$(HoursSinceYearStart)</FileVersion>
+		<PackOutputFolder>\$(ProjectName)\bin\Debug</PackOutputFolder>
 	</PropertyGroup>
 
 
-
-
-
-
-
-
-
-
-	<Target Name="CopyBuildOutputToReleases" AfterTargets="Pack">
+	<Target Name="CopyBuildOutputToReleases" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
 		<ItemGroup>
-			<BuildOutputFiles Include="$(PackOutputFolder)\**\*.*" />
-			<PackedSource Include="$(PackOutputFolder)\**\*.*" />
+			<BuildOutputFiles Include="$(OutputPath)\*.*" />
+
+			<ReleaseCopyOutputPath Include="F:\Released\$(ProjectName)" />
 		</ItemGroup>
 
-		<MakeDir Directories="$(ReleaseCopyOutputDir)" />
-		<MakeDir Directories="$(PackOutputFolder)" />
-		<Copy SourceFiles="@(BuildOutputFiles)" DestinationFolder="F:\Released\$(ProjectName)" SkipUnchangedFiles="false" />
-		<Copy SourceFiles="@(PackedSource)" DestinationFolder="$(ReleaseCopyOutputDir)" SkipUnchangedFiles="false" />
-		<Message Text="Package and build output copied to $(ReleaseCopyOutputDir)" Importance="High" />
+		<MakeDir Directories="@(ReleaseCopyOutputPath)" />
+		<Copy SourceFiles="@(BuildOutputFiles)" DestinationFolder="@(ReleaseCopyOutputPath)" SkipUnchangedFiles="false" />
+		<Message Text="build output copied to @(ReleaseCopyOutputPath)" Importance="High" />
 	</Target>
 
+	<Target Name="ReleasePackageToNuGet" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
+		<!-- <Exec Command="dotnet nuget push $(PackOutputFolder)\*.nupkg -source nuget.org" /> 	-->
+
+		<Message Text="Package pushed to NuGet.org" Importance="High" />
+		<Exec Command="dotnet nuget push $(PackOutputFolder)\*.nupkg --source local" />
+	</Target>
 
 
 </Project>

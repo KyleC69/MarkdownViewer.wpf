@@ -1,4 +1,12 @@
-﻿using System.Diagnostics;
+﻿// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         MarkdownIntegrationServices.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
@@ -7,12 +15,28 @@ using System.Windows.Media.Imaging;
 
 using MarkdownViewer.Wpf.Diagnostics;
 
+
+
+
 namespace MarkdownViewer.Wpf.Core;
+
+
+
+
 
 internal static class MarkdownIntegrationServices
 {
     private static readonly IMarkdownImageSourceResolver defaultImageSourceResolver = new DefaultMarkdownImageSourceResolver();
     private static readonly IMarkdownLinkNavigator defaultLinkNavigator = new DefaultMarkdownLinkNavigator();
+
+    private static readonly DependencyProperty HyperlinkContextProperty = DependencyProperty.RegisterAttached("HyperlinkContext", typeof(IRenderContext), typeof(MarkdownIntegrationServices), new PropertyMetadata(null));
+
+
+
+
+
+
+
 
     public static void ConfigureHyperlink(Hyperlink hyperlink, Uri uri, IRenderContext context)
     {
@@ -29,8 +53,7 @@ internal static class MarkdownIntegrationServices
             }
 
             IRenderContext renderContext = (IRenderContext)source.GetValue(HyperlinkContextProperty);
-            IMarkdownLinkNavigator navigator = renderContext.Services.GetService(typeof(IMarkdownLinkNavigator)) as IMarkdownLinkNavigator
-                ?? defaultLinkNavigator;
+            IMarkdownLinkNavigator navigator = renderContext.Services.GetService(typeof(IMarkdownLinkNavigator)) as IMarkdownLinkNavigator ?? defaultLinkNavigator;
 
             try
             {
@@ -45,13 +68,19 @@ internal static class MarkdownIntegrationServices
         hyperlink.SetValue(HyperlinkContextProperty, context);
     }
 
+
+
+
+
+
+
+
     public static ImageSource? ResolveImageSource(Uri uri, IRenderContext context)
     {
         ArgumentNullException.ThrowIfNull(uri);
         ArgumentNullException.ThrowIfNull(context);
 
-        IMarkdownImageSourceResolver resolver = context.Services.GetService(typeof(IMarkdownImageSourceResolver)) as IMarkdownImageSourceResolver
-            ?? defaultImageSourceResolver;
+        IMarkdownImageSourceResolver resolver = context.Services.GetService(typeof(IMarkdownImageSourceResolver)) as IMarkdownImageSourceResolver ?? defaultImageSourceResolver;
 
         try
         {
@@ -64,11 +93,12 @@ internal static class MarkdownIntegrationServices
         }
     }
 
-    private static readonly DependencyProperty HyperlinkContextProperty = DependencyProperty.RegisterAttached(
-        "HyperlinkContext",
-        typeof(IRenderContext),
-        typeof(MarkdownIntegrationServices),
-        new PropertyMetadata(null));
+
+
+
+
+
+
 
     private sealed class DefaultMarkdownImageSourceResolver : IMarkdownImageSourceResolver
     {
@@ -98,16 +128,16 @@ internal static class MarkdownIntegrationServices
             return bitmap;
         }
 
-        private static bool IsUnresolvedTemplateToken(Uri uri)
-        {
-            string value = uri.OriginalString;
-            return value.Contains("{{", StringComparison.Ordinal)
-                && value.Contains("}}", StringComparison.Ordinal);
-        }
+
+
+
+
+
+
 
         private static bool IsLikelyMissingLocalFile(Uri uri)
         {
-            string value = uri.OriginalString;
+            var value = uri.OriginalString;
             if (string.IsNullOrWhiteSpace(value))
             {
                 return true;
@@ -123,10 +153,27 @@ internal static class MarkdownIntegrationServices
                 return false;
             }
 
-            string candidatePath = Path.Combine(AppContext.BaseDirectory, value);
+            var candidatePath = Path.Combine(AppContext.BaseDirectory, value);
             return !File.Exists(candidatePath);
         }
+
+
+
+
+
+
+
+
+        private static bool IsUnresolvedTemplateToken(Uri uri)
+        {
+            var value = uri.OriginalString;
+            return value.Contains("{{", StringComparison.Ordinal) && value.Contains("}}", StringComparison.Ordinal);
+        }
     }
+
+
+
+
 
     private sealed class DefaultMarkdownLinkNavigator : IMarkdownLinkNavigator
     {

@@ -1,87 +1,104 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         MarkdownView.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
 using MarkdownViewer.Wpf.Core;
 
+
+
+
 namespace MarkdownViewer.Wpf;
+
+
+
+
 
 public class MarkdownView : Control
 {
-    private static readonly DependencyPropertyKey RenderedContentPropertyKey = DependencyProperty.RegisterReadOnly(
-        nameof(RenderedContent),
-        typeof(UIElement),
-        typeof(MarkdownView),
-        new PropertyMetadata(null));
 
     private bool refreshPending;
 
     private static readonly MarkdownEngine DefaultEngine = MarkdownEngine.CreateDefault();
 
-    public static readonly DependencyProperty MarkdownProperty = DependencyProperty.Register(
-        nameof(Markdown),
-        typeof(string),
-        typeof(MarkdownView),
-        new PropertyMetadata(null, OnRefreshPropertyChanged));
+    private static readonly DependencyPropertyKey RenderedContentPropertyKey = DependencyProperty.RegisterReadOnly(nameof(RenderedContent), typeof(UIElement), typeof(MarkdownView), new PropertyMetadata(null));
 
-    public static readonly DependencyProperty ThemeResourcesProperty = DependencyProperty.Register(
-        nameof(ThemeResources),
-        typeof(ResourceDictionary),
-        typeof(MarkdownView),
-        new PropertyMetadata(null, OnRefreshPropertyChanged));
+    public static readonly DependencyProperty MarkdownProperty = DependencyProperty.Register(nameof(Markdown), typeof(string), typeof(MarkdownView), new PropertyMetadata(null, OnRefreshPropertyChanged));
 
-    public static readonly DependencyProperty ServicesProperty = DependencyProperty.Register(
-        nameof(Services),
-        typeof(IServiceProvider),
-        typeof(MarkdownView),
-        new PropertyMetadata(EmptyServiceProvider.Instance, OnRefreshPropertyChanged));
+    public static readonly DependencyProperty ThemeResourcesProperty = DependencyProperty.Register(nameof(ThemeResources), typeof(ResourceDictionary), typeof(MarkdownView), new PropertyMetadata(null, OnRefreshPropertyChanged));
+
+    public static readonly DependencyProperty ServicesProperty = DependencyProperty.Register(nameof(Services), typeof(IServiceProvider), typeof(MarkdownView), new PropertyMetadata(EmptyServiceProvider.Instance, OnRefreshPropertyChanged));
 
     public static readonly DependencyProperty RenderedContentProperty = RenderedContentPropertyKey.DependencyProperty;
+
+
+
+
+
+
+
 
     static MarkdownView()
     {
         DefaultStyleKeyProperty.OverrideMetadata(typeof(MarkdownView), new FrameworkPropertyMetadata(typeof(MarkdownView)));
     }
 
+
+
+
+
+
+
+
     public string? Markdown
     {
-        get => (string?)GetValue(MarkdownProperty);
-        set => SetValue(MarkdownProperty, value);
-    }
-
-    public ResourceDictionary? ThemeResources
-    {
-        get => (ResourceDictionary?)GetValue(ThemeResourcesProperty);
-        set => SetValue(ThemeResourcesProperty, value);
-    }
-
-    public IServiceProvider? Services
-    {
-        get => (IServiceProvider?)GetValue(ServicesProperty);
-        set => SetValue(ServicesProperty, value);
+        get { return (string?)this.GetValue(MarkdownProperty); }
+        set { this.SetValue(MarkdownProperty, value); }
     }
 
     public UIElement? RenderedContent
     {
-        get => (UIElement?)GetValue(RenderedContentProperty);
-        protected set => SetValue(RenderedContentPropertyKey, value);
+        get { return (UIElement?)this.GetValue(RenderedContentProperty); }
+        protected set { this.SetValue(RenderedContentPropertyKey, value); }
     }
+
+    public IServiceProvider? Services
+    {
+        get { return (IServiceProvider?)this.GetValue(ServicesProperty); }
+        set { this.SetValue(ServicesProperty, value); }
+    }
+
+    public ResourceDictionary? ThemeResources
+    {
+        get { return (ResourceDictionary?)this.GetValue(ThemeResourcesProperty); }
+        set { this.SetValue(ThemeResourcesProperty, value); }
+    }
+
+
+
+
+
+
+
 
     internal static void OnRefreshPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
     {
         ((MarkdownView)dependencyObject).RequestRefresh();
     }
 
-    internal void RequestRefresh()
-    {
-        if (refreshPending)
-        {
-            return;
-        }
 
-        refreshPending = true;
-        Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(RefreshContent));
-    }
+
+
+
+
+
 
     internal void RefreshContent()
     {
@@ -93,9 +110,24 @@ public class MarkdownView : Control
             return;
         }
 
-        RenderedContent = DefaultEngine.Render(
-            Markdown,
-            Services ?? EmptyServiceProvider.Instance,
-            ThemeResources);
+        RenderedContent = DefaultEngine.Render(Markdown, Services ?? EmptyServiceProvider.Instance, ThemeResources);
+    }
+
+
+
+
+
+
+
+
+    internal void RequestRefresh()
+    {
+        if (refreshPending)
+        {
+            return;
+        }
+
+        refreshPending = true;
+        Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(RefreshContent));
     }
 }

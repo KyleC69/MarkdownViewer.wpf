@@ -1,8 +1,15 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         RenderHelpers.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Media;
 
 using HtmlAgilityPack;
 
@@ -10,9 +17,15 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 
 using MarkdownViewer.Wpf.Rendering.Html;
-using MarkdownViewer.Wpf;
+
+
+
 
 namespace MarkdownViewer.Wpf.Core;
+
+
+
+
 
 internal static class RenderHelpers
 {
@@ -25,8 +38,7 @@ internal static class RenderHelpers
 
         for (Markdig.Syntax.Inlines.Inline? current = container.FirstChild; current is not null;)
         {
-            if (current is HtmlInline htmlInline
-                && TryRenderHtmlFragment(htmlInline, context, out System.Windows.Documents.Inline? renderedHtml, out Markdig.Syntax.Inlines.Inline? lastConsumed))
+            if (current is HtmlInline htmlInline && TryRenderHtmlFragment(htmlInline, context, out System.Windows.Documents.Inline? renderedHtml, out Markdig.Syntax.Inlines.Inline? lastConsumed))
             {
                 collection.Add(renderedHtml);
                 current = lastConsumed.NextSibling;
@@ -38,12 +50,59 @@ internal static class RenderHelpers
         }
     }
 
+
+
+
+
+
+
+
+    public static Border CreateDebugLabel(string text, ResourceDictionary resources)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(text);
+        ArgumentNullException.ThrowIfNull(resources);
+
+        Border border = new();
+
+        TextBlock textBlock = new() { Text = text };
+        border.Child = textBlock;
+        return border;
+    }
+
+
+
+
+
+
+
+
+    public static TextBlock CreateTextBlock(IRenderContext context)
+    {
+        return new TextBlock { TextWrapping = TextWrapping.Wrap };
+    }
+
+
+
+
+
+
+
+
+    public static string GetLiteral(LeafBlock block)
+    {
+        return string.Join(Environment.NewLine, block.Lines.Lines.Take(block.Lines.Count).Select(line => line.Slice.ToString()));
+    }
+
+
+
+
+
+
+
+
     public static StackPanel RenderChildBlocks(ContainerBlock container, IRenderContext context)
     {
-        StackPanel panel = new()
-        {
-            Orientation = Orientation.Vertical,
-        };
+        StackPanel panel = new() { Orientation = Orientation.Vertical };
 
         foreach (Markdig.Syntax.Block child in container)
         {
@@ -53,96 +112,12 @@ internal static class RenderHelpers
         return panel;
     }
 
-    public static TextBlock CreateTextBlock(IRenderContext context)
-    {
-        return new TextBlock
-        {
-            TextWrapping = TextWrapping.Wrap,
-        };
-    }
 
-    public static string GetLiteral(LeafBlock block)
-    {
-        return string.Join(Environment.NewLine, block.Lines.Lines.Take(block.Lines.Count).Select(line => line.Slice.ToString()));
-    }
 
-    public static Border CreateDebugLabel(string text, ResourceDictionary resources)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(text);
-        ArgumentNullException.ThrowIfNull(resources);
 
-        Border border = new();
 
-        TextBlock textBlock = new()
-        {
-            Text = text,
-        };
-        border.Child = textBlock;
-        return border;
-    }
 
-    private static bool TryRenderHtmlFragment(HtmlInline startInline, IRenderContext context, out System.Windows.Documents.Inline renderedInline, out Markdig.Syntax.Inlines.Inline lastConsumed)
-    {
-        ArgumentNullException.ThrowIfNull(startInline);
-        ArgumentNullException.ThrowIfNull(context);
 
-        renderedInline = null!;
-        lastConsumed = startInline;
-
-        string tag = startInline.Tag ?? string.Empty;
-        if (!HtmlWpfRenderer.TryDescribeTag(tag, out HtmlTagDescriptor descriptor))
-        {
-            return false;
-        }
-
-        if (descriptor.IsStandalone)
-        {
-            renderedInline = HtmlWpfRenderer.RenderInlineTag(tag, context);
-            return true;
-        }
-
-        if (descriptor.IsClosing)
-        {
-            return false;
-        }
-
-        StringBuilder fragmentBuilder = new();
-        fragmentBuilder.Append(tag);
-
-        int depth = 1;
-        for (Markdig.Syntax.Inlines.Inline? current = startInline.NextSibling; current is not null; current = current.NextSibling)
-        {
-            if (!TryConvertInlineToHtml(current, out string html))
-            {
-                return false;
-            }
-
-            fragmentBuilder.Append(html);
-            lastConsumed = current;
-
-            if (current is HtmlInline htmlInline
-                && HtmlWpfRenderer.TryDescribeTag(htmlInline.Tag ?? string.Empty, out HtmlTagDescriptor currentDescriptor)
-                && string.Equals(currentDescriptor.Name, descriptor.Name, StringComparison.OrdinalIgnoreCase))
-            {
-                if (currentDescriptor.IsClosing)
-                {
-                    depth--;
-                }
-                else if (!currentDescriptor.IsStandalone)
-                {
-                    depth++;
-                }
-
-                if (depth == 0)
-                {
-                    renderedInline = HtmlWpfRenderer.RenderInlineFragment(fragmentBuilder.ToString(), context);
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 
     private static bool TryConvertInlineToHtml(Markdig.Syntax.Inlines.Inline inline, out string html)
     {
@@ -166,5 +141,73 @@ internal static class RenderHelpers
                 html = string.Empty;
                 return false;
         }
+    }
+
+
+
+
+
+
+
+
+    private static bool TryRenderHtmlFragment(HtmlInline startInline, IRenderContext context, out System.Windows.Documents.Inline renderedInline, out Markdig.Syntax.Inlines.Inline lastConsumed)
+    {
+        ArgumentNullException.ThrowIfNull(startInline);
+        ArgumentNullException.ThrowIfNull(context);
+
+        renderedInline = null!;
+        lastConsumed = startInline;
+
+        var tag = startInline.Tag ?? string.Empty;
+        if (!HtmlWpfRenderer.TryDescribeTag(tag, out HtmlTagDescriptor descriptor))
+        {
+            return false;
+        }
+
+        if (descriptor.IsStandalone)
+        {
+            renderedInline = HtmlWpfRenderer.RenderInlineTag(tag, context);
+            return true;
+        }
+
+        if (descriptor.IsClosing)
+        {
+            return false;
+        }
+
+        StringBuilder fragmentBuilder = new();
+        fragmentBuilder.Append(tag);
+
+        var depth = 1;
+        for (Markdig.Syntax.Inlines.Inline? current = startInline.NextSibling; current is not null; current = current.NextSibling)
+        {
+            if (!TryConvertInlineToHtml(current, out var html))
+            {
+                return false;
+            }
+
+            fragmentBuilder.Append(html);
+            lastConsumed = current;
+
+            if (current is HtmlInline htmlInline && HtmlWpfRenderer.TryDescribeTag(htmlInline.Tag ?? string.Empty, out HtmlTagDescriptor currentDescriptor) && string.Equals(currentDescriptor.Name, descriptor.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                if (currentDescriptor.IsClosing)
+                {
+                    depth--;
+                }
+                else if (!currentDescriptor.IsStandalone)
+                {
+                    depth++;
+                }
+
+                if (depth == 0)
+                {
+                    renderedInline = HtmlWpfRenderer.RenderInlineFragment(fragmentBuilder.ToString(), context);
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

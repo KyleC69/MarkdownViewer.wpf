@@ -1,9 +1,8 @@
-﻿// Build Date: 2026/05/01
-// Solution: MarkdownViewer.Wpf
+﻿// Solution: MarkdownViewer.Wpf
 // Project:   MarkdownViewer.WPF.Sample
 // File:         MainWindow.xaml.cs
 // Author: Kyle L. Crowder
-// Build Num: 212740
+// Build Date: 2026/05/02
 
 
 
@@ -72,11 +71,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void LoadSampleMarkdown()
     {
-        string markdownPath = Path.Combine(AppContext.BaseDirectory, "SampleMarkdown.md");
-        string imagePath = Path.Combine(AppContext.BaseDirectory, "Assets", "sample-image.png");
+        var markdownPath = Path.Combine(AppContext.BaseDirectory, "SampleMarkdown.md");
+        var imagePath = Path.Combine(AppContext.BaseDirectory, "Assets", "sample-image.png");
 
-        string content = File.ReadAllText(markdownPath);
-        string imageUri = new Uri(imagePath, UriKind.Absolute).AbsoluteUri;
+        var content = File.ReadAllText(markdownPath);
+        var imageUri = new Uri(imagePath, UriKind.Absolute).AbsoluteUri;
         MarkdownText = content.Replace(SampleImageToken, imageUri, StringComparison.Ordinal);
     }
 

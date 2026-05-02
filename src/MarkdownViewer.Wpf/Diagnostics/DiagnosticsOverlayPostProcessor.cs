@@ -1,18 +1,39 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         DiagnosticsOverlayPostProcessor.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 using MarkdownViewer.Wpf.Core;
-using MarkdownViewer.Wpf.Rendering;
+
+
+
 
 namespace MarkdownViewer.Wpf.Diagnostics;
 
+
+
+
+
 public sealed class DiagnosticsOverlayPostProcessor : IPostProcessor
 {
-    private const string OverlayTag = nameof(DiagnosticsOverlayPostProcessor);
-    private const string OverlayLabelTag = nameof(DiagnosticsOverlayPostProcessor) + ".Label";
     private const string OverlayBorderBrushKey = "DiagnosticsOverlayBorderBrush";
     private const string OverlayBorderThicknessKey = "DiagnosticsOverlayBorderThickness";
+    private const string OverlayLabelTag = nameof(DiagnosticsOverlayPostProcessor) + ".Label";
+    private const string OverlayTag = nameof(DiagnosticsOverlayPostProcessor);
+
+
+
+
+
+
+
 
     public void Process(UIElement root, IRenderContext context)
     {
@@ -21,6 +42,13 @@ public sealed class DiagnosticsOverlayPostProcessor : IPostProcessor
 
         Annotate(root, context);
     }
+
+
+
+
+
+
+
 
     internal static void Annotate(UIElement element, IRenderContext context)
     {
@@ -35,8 +63,7 @@ public sealed class DiagnosticsOverlayPostProcessor : IPostProcessor
         {
             if (border.BorderBrush is null)
             {
-                if (context.Resources.Contains(OverlayBorderBrushKey)
-                    && context.Resources[OverlayBorderBrushKey] is Brush themeBorderBrush)
+                if (context.Resources.Contains(OverlayBorderBrushKey) && context.Resources[OverlayBorderBrushKey] is Brush themeBorderBrush)
                 {
                     border.BorderBrush = themeBorderBrush;
                 }
@@ -48,8 +75,7 @@ public sealed class DiagnosticsOverlayPostProcessor : IPostProcessor
 
             if (border.BorderThickness == default)
             {
-                if (context.Resources.Contains(OverlayBorderThicknessKey)
-                    && context.Resources[OverlayBorderThicknessKey] is Thickness themeBorderThickness)
+                if (context.Resources.Contains(OverlayBorderThicknessKey) && context.Resources[OverlayBorderThicknessKey] is Thickness themeBorderThickness)
                 {
                     border.BorderThickness = themeBorderThickness;
                 }
@@ -79,6 +105,13 @@ public sealed class DiagnosticsOverlayPostProcessor : IPostProcessor
         }
     }
 
+
+
+
+
+
+
+
     private static void ApplyLabel(Border border, IRenderContext context)
     {
         if (border.Child is not UIElement child)
@@ -91,10 +124,7 @@ public sealed class DiagnosticsOverlayPostProcessor : IPostProcessor
             return;
         }
 
-        Grid overlay = new()
-        {
-            Tag = OverlayTag,
-        };
+        Grid overlay = new() { Tag = OverlayTag };
         border.Child = null;
         overlay.Children.Add(child);
 

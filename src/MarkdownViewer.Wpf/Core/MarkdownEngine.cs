@@ -1,14 +1,13 @@
-﻿// Build Date: 2026/05/01
-// Solution: MarkdownViewer.Wpf
+﻿// Solution: MarkdownViewer.Wpf
 // Project:   MarkdownViewer.Wpf
 // File:         MarkdownEngine.cs
 // Author: Kyle L. Crowder
-// Build Num: 125638
+// Build Date: 2026/05/02
 
 
 
-using System.Windows;
 using System.Collections;
+using System.Windows;
 
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
@@ -88,6 +87,26 @@ public sealed class MarkdownEngine
 
 
 
+    internal static void MergeThemeResources(ResourceDictionary target, ResourceDictionary source)
+    {
+        foreach (DictionaryEntry entry in source)
+        {
+            target[entry.Key] = entry.Value;
+        }
+
+        foreach (ResourceDictionary mergedDictionary in source.MergedDictionaries)
+        {
+            target.MergedDictionaries.Add(mergedDictionary);
+        }
+    }
+
+
+
+
+
+
+
+
     public UIElement Render(string markdown, IServiceProvider services, ResourceDictionary? themeResources = null)
     {
         ArgumentNullException.ThrowIfNull(markdown);
@@ -112,18 +131,5 @@ public sealed class MarkdownEngine
         }
 
         return root;
-    }
-
-    internal static void MergeThemeResources(ResourceDictionary target, ResourceDictionary source)
-    {
-        foreach (DictionaryEntry entry in source)
-        {
-            target[entry.Key] = entry.Value;
-        }
-
-        foreach (ResourceDictionary mergedDictionary in source.MergedDictionaries)
-        {
-            target.MergedDictionaries.Add(mergedDictionary);
-        }
     }
 }

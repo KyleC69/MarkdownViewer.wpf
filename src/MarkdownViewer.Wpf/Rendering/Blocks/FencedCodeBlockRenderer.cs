@@ -1,10 +1,25 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         FencedCodeBlockRenderer.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Windows;
 
 using Markdig.Syntax;
 
 using MarkdownViewer.Wpf.Core;
 
+
+
+
 namespace MarkdownViewer.Wpf.Rendering.Blocks;
+
+
+
+
 
 public sealed class FencedCodeBlockRenderer : IBlockRenderer<FencedCodeBlock>
 {

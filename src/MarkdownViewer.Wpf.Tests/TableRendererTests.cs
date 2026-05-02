@@ -1,3 +1,11 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf.Tests
+// File:         TableRendererTests.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,49 +17,54 @@ using MarkdownViewer.Wpf.Rendering.Blocks;
 
 using Xunit;
 
+
+
+
 namespace MarkdownViewer.Wpf.Tests;
+
+
+
+
 
 public sealed class TableRendererTests
 {
-    private readonly TableRenderer renderer = new();
     private readonly RenderContext context = MarkdownTestHelper.CreateContext();
+    private readonly TableRenderer renderer = new();
 
-    private const string SimpleTable =
-        "| Col1 | Col2 |\n" +
-        "|------|------|\n" +
-        "| A    | B    |\n" +
-        "| C    | D    |";
+    private const string SimpleTable = "| Col1 | Col2 |\n" + "|------|------|\n" + "| A    | B    |\n" + "| C    | D    |";
 
-    [StaFact]
-    public void Render_ReturnsTableGrid()
-    {
-        Table table = MarkdownTestHelper.ParseFirstBlock<Table>(SimpleTable);
 
-        UIElement result = renderer.Render(table, context);
 
-        Assert.IsType<TableGrid>(result);
-    }
+
+
+
+
 
     [StaFact]
-    public void Render_CreatesCorrectColumnCount_ForTwoColumnTable()
+    public void Render_CellBordersHaveCorrectRowAndColumnAssignments()
     {
-        Table table = MarkdownTestHelper.ParseFirstBlock<Table>(SimpleTable);
+        const string markdown = "| A | B |\n" + "|---|---|\n" + "| C | D |";
+        Table table = MarkdownTestHelper.ParseFirstBlock<Table>(markdown);
 
         TableGrid grid = Assert.IsType<TableGrid>(renderer.Render(table, context));
 
-        Assert.Equal(2, grid.ColumnDefinitions.Count);
+        // First cell: row 0, col 0
+        UIElement firstCell = grid.Children[0];
+        Assert.Equal(0, Grid.GetRow(firstCell));
+        Assert.Equal(0, Grid.GetColumn(firstCell));
+
+        // Second cell: row 0, col 1
+        UIElement secondCell = grid.Children[1];
+        Assert.Equal(0, Grid.GetRow(secondCell));
+        Assert.Equal(1, Grid.GetColumn(secondCell));
     }
 
-    [StaFact]
-    public void Render_CreatesCorrectRowCount_ForHeaderPlusDataRows()
-    {
-        Table table = MarkdownTestHelper.ParseFirstBlock<Table>(SimpleTable);
 
-        TableGrid grid = Assert.IsType<TableGrid>(renderer.Render(table, context));
 
-        // Header row + 2 data rows = 3
-        Assert.Equal(3, grid.RowDefinitions.Count);
-    }
+
+
+
+
 
     [StaFact]
     public void Render_CreatesCellBordersForEachCell()
@@ -68,22 +81,32 @@ public sealed class TableRendererTests
         }
     }
 
-    [StaFact]
-    public void Render_Throws_WhenTableIsNull()
-    {
-        Assert.Throws<ArgumentNullException>(() => renderer.Render(null!, context));
-    }
+
+
+
+
+
+
 
     [StaFact]
-    public void Render_Throws_WhenContextIsNull()
+    public void Render_CreatesCorrectColumnCount_ForTwoColumnTable()
     {
         Table table = MarkdownTestHelper.ParseFirstBlock<Table>(SimpleTable);
 
-        Assert.Throws<ArgumentNullException>(() => renderer.Render(table, null!));
+        TableGrid grid = Assert.IsType<TableGrid>(renderer.Render(table, context));
+
+        Assert.Equal(2, grid.ColumnDefinitions.Count);
     }
 
+
+
+
+
+
+
+
     [StaTheory]
-    [InlineData("| A |\n|---|\n| B |", 1, 2)]    // 1 col, 2 rows
+    [InlineData("| A |\n|---|\n| B |", 1, 2)] // 1 col, 2 rows
     [InlineData("| A | B | C |\n|---|---|---|\n| D | E | F |", 3, 2)] // 3 cols, 2 rows
     public void Render_CreatesCorrectDimensions_ForVariousTableSizes(string markdown, int expectedColumns, int expectedRows)
     {
@@ -95,25 +118,66 @@ public sealed class TableRendererTests
         Assert.Equal(expectedRows, grid.RowDefinitions.Count);
     }
 
+
+
+
+
+
+
+
     [StaFact]
-    public void Render_CellBordersHaveCorrectRowAndColumnAssignments()
+    public void Render_CreatesCorrectRowCount_ForHeaderPlusDataRows()
     {
-        const string markdown =
-            "| A | B |\n" +
-            "|---|---|\n" +
-            "| C | D |";
-        Table table = MarkdownTestHelper.ParseFirstBlock<Table>(markdown);
+        Table table = MarkdownTestHelper.ParseFirstBlock<Table>(SimpleTable);
 
         TableGrid grid = Assert.IsType<TableGrid>(renderer.Render(table, context));
 
-        // First cell: row 0, col 0
-        UIElement firstCell = grid.Children[0];
-        Assert.Equal(0, Grid.GetRow(firstCell));
-        Assert.Equal(0, Grid.GetColumn(firstCell));
+        // Header row + 2 data rows = 3
+        Assert.Equal(3, grid.RowDefinitions.Count);
+    }
 
-        // Second cell: row 0, col 1
-        UIElement secondCell = grid.Children[1];
-        Assert.Equal(0, Grid.GetRow(secondCell));
-        Assert.Equal(1, Grid.GetColumn(secondCell));
+
+
+
+
+
+
+
+    [StaFact]
+    public void Render_ReturnsTableGrid()
+    {
+        Table table = MarkdownTestHelper.ParseFirstBlock<Table>(SimpleTable);
+
+        UIElement result = renderer.Render(table, context);
+
+        Assert.IsType<TableGrid>(result);
+    }
+
+
+
+
+
+
+
+
+    [StaFact]
+    public void Render_Throws_WhenContextIsNull()
+    {
+        Table table = MarkdownTestHelper.ParseFirstBlock<Table>(SimpleTable);
+
+        Assert.Throws<ArgumentNullException>(() => renderer.Render(table, null!));
+    }
+
+
+
+
+
+
+
+
+    [StaFact]
+    public void Render_Throws_WhenTableIsNull()
+    {
+        Assert.Throws<ArgumentNullException>(() => renderer.Render(null!, context));
     }
 }

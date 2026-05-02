@@ -1,12 +1,34 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf
+// File:         RenderContext.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Windows;
 using System.Windows.Documents;
 
+
+
+
 namespace MarkdownViewer.Wpf.Core;
+
+
+
+
 
 internal sealed class RenderContext : IRenderContext
 {
     private readonly List<IPostProcessor> postProcessors;
     private readonly RendererDispatcher rendererDispatcher;
+
+
+
+
+
+
+
 
     public RenderContext(RendererDispatcher rendererDispatcher, ResourceDictionary themeResources, ResourceDictionary resources, IServiceProvider services, IEnumerable<IPostProcessor>? postProcessors = null)
     {
@@ -17,13 +39,24 @@ internal sealed class RenderContext : IRenderContext
         this.postProcessors = postProcessors?.ToList() ?? [];
     }
 
-    public ResourceDictionary Resources { get; }
 
-    public ResourceDictionary ThemeResources { get; }
 
-    public IServiceProvider Services { get; }
 
-    public IReadOnlyList<IPostProcessor> PostProcessors => postProcessors;
+
+
+
+
+    public IReadOnlyList<IPostProcessor> PostProcessors
+    {
+        get { return postProcessors; }
+    }
+
+
+
+
+
+
+
 
     public void AddPostProcessor(IPostProcessor processor)
     {
@@ -31,13 +64,40 @@ internal sealed class RenderContext : IRenderContext
         postProcessors.Add(processor);
     }
 
+
+
+
+
+
+
+
     public UIElement RenderBlock(Markdig.Syntax.Block block)
     {
         return rendererDispatcher.RenderBlock(block, this);
     }
 
-    public System.Windows.Documents.Inline RenderInline(Markdig.Syntax.Inlines.Inline inline)
+
+
+
+
+
+
+
+    public Inline RenderInline(Markdig.Syntax.Inlines.Inline inline)
     {
         return rendererDispatcher.RenderInline(inline, this);
     }
+
+
+
+
+
+
+
+
+    public ResourceDictionary Resources { get; }
+
+    public IServiceProvider Services { get; }
+
+    public ResourceDictionary ThemeResources { get; }
 }

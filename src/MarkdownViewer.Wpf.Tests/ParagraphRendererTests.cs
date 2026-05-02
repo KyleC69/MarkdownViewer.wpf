@@ -1,3 +1,11 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf.Tests
+// File:         ParagraphRendererTests.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,66 +17,26 @@ using MarkdownViewer.Wpf.Rendering.Blocks;
 
 using Xunit;
 
+
+
+
 namespace MarkdownViewer.Wpf.Tests;
+
+
+
+
 
 public sealed class ParagraphRendererTests
 {
-    private readonly ParagraphRenderer renderer = new();
     private readonly RenderContext context = MarkdownTestHelper.CreateContext();
+    private readonly ParagraphRenderer renderer = new();
 
-    [StaFact]
-    public void Render_ReturnsParagraphTextBlock()
-    {
-        ParagraphBlock block = MarkdownTestHelper.ParseFirstBlock<ParagraphBlock>("Hello world");
 
-        UIElement result = renderer.Render(block, context);
 
-        Assert.IsType<ParagraphTextBlock>(result);
-    }
 
-    [StaFact]
-    public void Render_IncludesTextContent_InReturnedTextBlock()
-    {
-        ParagraphBlock block = MarkdownTestHelper.ParseFirstBlock<ParagraphBlock>("Hello world");
 
-        TextBlock result = Assert.IsType<ParagraphTextBlock>(renderer.Render(block, context));
 
-        Assert.Equal("Hello world", MarkdownTestHelper.GetInlineText(result));
-    }
 
-    [StaFact]
-    public void Render_AppliesTextWrapping_ToParagraph()
-    {
-        ParagraphBlock block = MarkdownTestHelper.ParseFirstBlock<ParagraphBlock>("Some paragraph");
-
-        TextBlock result = Assert.IsType<ParagraphTextBlock>(renderer.Render(block, context));
-
-        Assert.Equal(TextWrapping.Wrap, result.TextWrapping);
-    }
-
-    [StaFact]
-    public void Render_AppliesBottomMargin_ToParagraph()
-    {
-        ParagraphBlock block = MarkdownTestHelper.ParseFirstBlock<ParagraphBlock>("Some paragraph");
-
-        TextBlock result = Assert.IsType<ParagraphTextBlock>(renderer.Render(block, context));
-
-        Assert.Equal(12, result.Margin.Bottom);
-    }
-
-    [StaFact]
-    public void Render_Throws_WhenBlockIsNull()
-    {
-        Assert.Throws<ArgumentNullException>(() => renderer.Render(null!, context));
-    }
-
-    [StaFact]
-    public void Render_Throws_WhenContextIsNull()
-    {
-        ParagraphBlock block = MarkdownTestHelper.ParseFirstBlock<ParagraphBlock>("text");
-
-        Assert.Throws<ArgumentNullException>(() => renderer.Render(block, null!));
-    }
 
     [StaTheory]
     [InlineData("Simple text")]
@@ -81,5 +49,101 @@ public sealed class ParagraphRendererTests
         UIElement result = renderer.Render(block, context);
 
         Assert.IsType<ParagraphTextBlock>(result);
+    }
+
+
+
+
+
+
+
+
+    [StaFact]
+    public void Render_AppliesBottomMargin_ToParagraph()
+    {
+        ParagraphBlock block = MarkdownTestHelper.ParseFirstBlock<ParagraphBlock>("Some paragraph");
+
+        TextBlock result = Assert.IsType<ParagraphTextBlock>(renderer.Render(block, context));
+
+        Assert.Equal(12, result.Margin.Bottom);
+    }
+
+
+
+
+
+
+
+
+    [StaFact]
+    public void Render_AppliesTextWrapping_ToParagraph()
+    {
+        ParagraphBlock block = MarkdownTestHelper.ParseFirstBlock<ParagraphBlock>("Some paragraph");
+
+        TextBlock result = Assert.IsType<ParagraphTextBlock>(renderer.Render(block, context));
+
+        Assert.Equal(TextWrapping.Wrap, result.TextWrapping);
+    }
+
+
+
+
+
+
+
+
+    [StaFact]
+    public void Render_IncludesTextContent_InReturnedTextBlock()
+    {
+        ParagraphBlock block = MarkdownTestHelper.ParseFirstBlock<ParagraphBlock>("Hello world");
+
+        TextBlock result = Assert.IsType<ParagraphTextBlock>(renderer.Render(block, context));
+
+        Assert.Equal("Hello world", MarkdownTestHelper.GetInlineText(result));
+    }
+
+
+
+
+
+
+
+
+    [StaFact]
+    public void Render_ReturnsParagraphTextBlock()
+    {
+        ParagraphBlock block = MarkdownTestHelper.ParseFirstBlock<ParagraphBlock>("Hello world");
+
+        UIElement result = renderer.Render(block, context);
+
+        Assert.IsType<ParagraphTextBlock>(result);
+    }
+
+
+
+
+
+
+
+
+    [StaFact]
+    public void Render_Throws_WhenBlockIsNull()
+    {
+        Assert.Throws<ArgumentNullException>(() => renderer.Render(null!, context));
+    }
+
+
+
+
+
+
+
+
+    [StaFact]
+    public void Render_Throws_WhenContextIsNull()
+    {
+        ParagraphBlock block = MarkdownTestHelper.ParseFirstBlock<ParagraphBlock>("text");
+
+        Assert.Throws<ArgumentNullException>(() => renderer.Render(block, null!));
     }
 }

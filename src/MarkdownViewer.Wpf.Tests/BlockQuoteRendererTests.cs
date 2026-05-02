@@ -1,3 +1,11 @@
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf.Tests
+// File:         BlockQuoteRendererTests.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,22 +17,62 @@ using MarkdownViewer.Wpf.Rendering.Blocks;
 
 using Xunit;
 
+
+
+
 namespace MarkdownViewer.Wpf.Tests;
+
+
+
+
 
 public sealed class BlockQuoteRendererTests
 {
-    private readonly BlockQuoteRenderer renderer = new();
     private readonly RenderContext context = MarkdownTestHelper.CreateContext();
+    private readonly BlockQuoteRenderer renderer = new();
 
-    [StaFact]
-    public void Render_ReturnsBlockQuoteBorder()
+
+
+
+
+
+
+
+    [StaTheory]
+    [InlineData("> single line")]
+    [InlineData("> line one\n> line two")]
+    public void Render_AlwaysReturnsBlockQuoteBorder_ForAnyQuoteContent(string markdown)
     {
-        QuoteBlock block = MarkdownTestHelper.ParseFirstBlock<QuoteBlock>("> quoted text");
+        QuoteBlock block = MarkdownTestHelper.ParseFirstBlock<QuoteBlock>(markdown);
 
         UIElement result = renderer.Render(block, context);
 
         Assert.IsType<BlockQuoteBorder>(result);
     }
+
+
+
+
+
+
+
+
+    [StaFact]
+    public void Render_AppliesBottomMargin_ToBlockQuote()
+    {
+        QuoteBlock block = MarkdownTestHelper.ParseFirstBlock<QuoteBlock>("> text");
+
+        BlockQuoteBorder border = Assert.IsType<BlockQuoteBorder>(renderer.Render(block, context));
+
+        Assert.Equal(12, border.Margin.Bottom);
+    }
+
+
+
+
+
+
+
 
     [StaFact]
     public void Render_AppliesLeftBorderThickness_ToBlockQuote()
@@ -36,6 +84,13 @@ public sealed class BlockQuoteRendererTests
         Assert.Equal(new Thickness(4, 0, 0, 0), border.BorderThickness);
     }
 
+
+
+
+
+
+
+
     [StaFact]
     public void Render_ContainsChildStackPanel_WithNestedContent()
     {
@@ -45,6 +100,13 @@ public sealed class BlockQuoteRendererTests
 
         Assert.IsType<StackPanel>(border.Child);
     }
+
+
+
+
+
+
+
 
     [StaFact]
     public void Render_NestedStackPanel_ContainsRenderedParagraph()
@@ -58,15 +120,29 @@ public sealed class BlockQuoteRendererTests
         Assert.IsType<ParagraphTextBlock>(stackPanel.Children[0]);
     }
 
+
+
+
+
+
+
+
     [StaFact]
-    public void Render_AppliesBottomMargin_ToBlockQuote()
+    public void Render_ReturnsBlockQuoteBorder()
     {
-        QuoteBlock block = MarkdownTestHelper.ParseFirstBlock<QuoteBlock>("> text");
+        QuoteBlock block = MarkdownTestHelper.ParseFirstBlock<QuoteBlock>("> quoted text");
 
-        BlockQuoteBorder border = Assert.IsType<BlockQuoteBorder>(renderer.Render(block, context));
+        UIElement result = renderer.Render(block, context);
 
-        Assert.Equal(12, border.Margin.Bottom);
+        Assert.IsType<BlockQuoteBorder>(result);
     }
+
+
+
+
+
+
+
 
     [StaFact]
     public void Render_Throws_WhenBlockIsNull()
@@ -74,23 +150,18 @@ public sealed class BlockQuoteRendererTests
         Assert.Throws<ArgumentNullException>(() => renderer.Render(null!, context));
     }
 
+
+
+
+
+
+
+
     [StaFact]
     public void Render_Throws_WhenContextIsNull()
     {
         QuoteBlock block = MarkdownTestHelper.ParseFirstBlock<QuoteBlock>("> text");
 
         Assert.Throws<ArgumentNullException>(() => renderer.Render(block, null!));
-    }
-
-    [StaTheory]
-    [InlineData("> single line")]
-    [InlineData("> line one\n> line two")]
-    public void Render_AlwaysReturnsBlockQuoteBorder_ForAnyQuoteContent(string markdown)
-    {
-        QuoteBlock block = MarkdownTestHelper.ParseFirstBlock<QuoteBlock>(markdown);
-
-        UIElement result = renderer.Render(block, context);
-
-        Assert.IsType<BlockQuoteBorder>(result);
     }
 }

@@ -1,4 +1,11 @@
-using System.Threading.Tasks;
+// Solution: MarkdownViewer.Wpf
+// Project:   MarkdownViewer.Wpf.Tests
+// File:         CodeBlockRenderingTests.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/05/02
+
+
+
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,10 +17,68 @@ using MarkdownViewer.Wpf.Rendering.Blocks;
 
 using Xunit;
 
+
+
+
 namespace MarkdownViewer.Wpf.Tests;
+
+
+
+
 
 public sealed class CodeBlockRenderingTests
 {
+
+    [StaFact]
+    public void CopyButton_HasCorrectInitialStateAndCodeTag()
+    {
+        MarkdownEngine engine = MarkdownEngine.CreateDefault();
+
+        MarkdownRootPanel root = Assert.IsType<MarkdownRootPanel>(engine.Render("```txt\nalpha\nbeta\n```", EmptyServiceProvider.Instance));
+        CodeBlockBorder border = Assert.IsType<CodeBlockBorder>(root.Children[0]);
+        Grid grid = Assert.IsType<Grid>(border.Child);
+        CodeBlockHeaderBorder headerBorder = Assert.IsType<CodeBlockHeaderBorder>(grid.Children[0]);
+        CodeBlockHeaderPanel header = Assert.IsType<CodeBlockHeaderPanel>(headerBorder.Child);
+        CodeBlockCopyButton copy = Assert.IsType<CodeBlockCopyButton>(header.Children[1]);
+
+        Assert.Equal("Copy", copy.Content);
+        Assert.True(copy.IsEnabled);
+        var tag = copy.Tag as string;
+        Assert.NotNull(tag);
+        Assert.Contains("alpha", tag, StringComparison.Ordinal);
+        Assert.Contains("beta", tag, StringComparison.Ordinal);
+    }
+
+
+
+
+
+
+
+
+    [StaFact]
+    public void FencedCodeBlock_CodeTextContent_MatchesSourceCode()
+    {
+        MarkdownEngine engine = MarkdownEngine.CreateDefault();
+        const string sourceCode = "var x = 1;\nvar y = 2;";
+
+        MarkdownRootPanel root = Assert.IsType<MarkdownRootPanel>(engine.Render($"```\n{sourceCode}\n```", EmptyServiceProvider.Instance));
+        CodeBlockBorder border = Assert.IsType<CodeBlockBorder>(root.Children[0]);
+        Grid grid = Assert.IsType<Grid>(border.Child);
+        CodeBlockScrollViewer viewer = Assert.IsType<CodeBlockScrollViewer>(grid.Children[1]);
+        CodeBlockTextBlock codeText = Assert.IsType<CodeBlockTextBlock>(viewer.Content);
+
+        var normalizedText = codeText.Text.Replace("\r\n", "\n", StringComparison.Ordinal);
+        Assert.Equal(sourceCode, normalizedText);
+    }
+
+
+
+
+
+
+
+
     [StaFact]
     public void FencedCodeBlock_RendersLanguageHeaderAndCopyButton()
     {
@@ -39,20 +104,12 @@ public sealed class CodeBlockRenderingTests
         Assert.Equal(TextWrapping.NoWrap, codeText.TextWrapping);
     }
 
-    [StaFact]
-    public void IndentedCodeBlock_RendersDefaultLanguageLabel()
-    {
-        MarkdownEngine engine = MarkdownEngine.CreateDefault();
 
-        MarkdownRootPanel root = Assert.IsType<MarkdownRootPanel>(engine.Render("    Console.WriteLine(42);", EmptyServiceProvider.Instance));
-        CodeBlockBorder border = Assert.IsType<CodeBlockBorder>(root.Children[0]);
-        Grid grid = Assert.IsType<Grid>(border.Child);
-        CodeBlockHeaderBorder headerBorder = Assert.IsType<CodeBlockHeaderBorder>(grid.Children[0]);
-        CodeBlockHeaderPanel header = Assert.IsType<CodeBlockHeaderPanel>(headerBorder.Child);
-        CodeBlockHeaderTextBlock language = Assert.IsType<CodeBlockHeaderTextBlock>(header.Children[0]);
 
-        Assert.Equal("text", language.Text);
-    }
+
+
+
+
 
     [StaFact]
     public void FencedCodeBlock_WithNoLanguage_RendersDefaultLanguageLabel()
@@ -69,81 +126,12 @@ public sealed class CodeBlockRenderingTests
         Assert.Equal("text", language.Text);
     }
 
-    [StaFact]
-    public void FencedCodeBlock_CodeTextContent_MatchesSourceCode()
-    {
-        MarkdownEngine engine = MarkdownEngine.CreateDefault();
-        const string sourceCode = "var x = 1;\nvar y = 2;";
 
-        MarkdownRootPanel root = Assert.IsType<MarkdownRootPanel>(engine.Render($"```\n{sourceCode}\n```", EmptyServiceProvider.Instance));
-        CodeBlockBorder border = Assert.IsType<CodeBlockBorder>(root.Children[0]);
-        Grid grid = Assert.IsType<Grid>(border.Child);
-        CodeBlockScrollViewer viewer = Assert.IsType<CodeBlockScrollViewer>(grid.Children[1]);
-        CodeBlockTextBlock codeText = Assert.IsType<CodeBlockTextBlock>(viewer.Content);
 
-        string normalizedText = codeText.Text.Replace("\r\n", "\n", StringComparison.Ordinal);
-        Assert.Equal(sourceCode, normalizedText);
-    }
 
-    [StaFact]
-    public void CopyButton_HasCorrectInitialStateAndCodeTag()
-    {
-        MarkdownEngine engine = MarkdownEngine.CreateDefault();
 
-        MarkdownRootPanel root = Assert.IsType<MarkdownRootPanel>(engine.Render("```txt\nalpha\nbeta\n```", EmptyServiceProvider.Instance));
-        CodeBlockBorder border = Assert.IsType<CodeBlockBorder>(root.Children[0]);
-        Grid grid = Assert.IsType<Grid>(border.Child);
-        CodeBlockHeaderBorder headerBorder = Assert.IsType<CodeBlockHeaderBorder>(grid.Children[0]);
-        CodeBlockHeaderPanel header = Assert.IsType<CodeBlockHeaderPanel>(headerBorder.Child);
-        CodeBlockCopyButton copy = Assert.IsType<CodeBlockCopyButton>(header.Children[1]);
 
-        Assert.Equal("Copy", copy.Content);
-        Assert.True(copy.IsEnabled);
-        string? tag = copy.Tag as string;
-        Assert.NotNull(tag);
-        Assert.Contains("alpha", tag, StringComparison.Ordinal);
-        Assert.Contains("beta", tag, StringComparison.Ordinal);
-    }
 
-    [Fact]
-    public void GetLanguage_ReturnsLanguageString_ForFencedCodeBlockWithLanguage()
-    {
-        FencedCodeBlock block = MarkdownTestHelper.ParseFirstBlock<FencedCodeBlock>("```csharp\ncode\n```");
-
-        string? language = CodeBlockRenderer.GetLanguage(block);
-
-        Assert.Equal("csharp", language);
-    }
-
-    [Fact]
-    public void GetLanguage_ReturnsNull_ForFencedCodeBlockWithNoLanguage()
-    {
-        FencedCodeBlock block = MarkdownTestHelper.ParseFirstBlock<FencedCodeBlock>("```\ncode\n```");
-
-        string? language = CodeBlockRenderer.GetLanguage(block);
-
-        Assert.Null(language);
-    }
-
-    [Fact]
-    public void GetLanguage_ReturnsNull_ForIndentedCodeBlock()
-    {
-        CodeBlock block = MarkdownTestHelper.ParseFirstBlock<CodeBlock>("    some code");
-
-        string? language = CodeBlockRenderer.GetLanguage(block);
-
-        Assert.Null(language);
-    }
-
-    [Fact]
-    public void GetLanguage_ReturnsNull_ForFencedCodeBlockWithWhitespaceLanguage()
-    {
-        FencedCodeBlock block = MarkdownTestHelper.ParseFirstBlock<FencedCodeBlock>("```   \ncode\n```");
-
-        string? language = CodeBlockRenderer.GetLanguage(block);
-
-        Assert.Null(language);
-    }
 
     [Theory]
     [InlineData("```csharp\ncode\n```", "csharp")]
@@ -154,9 +142,98 @@ public sealed class CodeBlockRenderingTests
     {
         FencedCodeBlock block = MarkdownTestHelper.ParseFirstBlock<FencedCodeBlock>(markdown);
 
-        string? language = CodeBlockRenderer.GetLanguage(block);
+        var language = CodeBlockRenderer.GetLanguage(block);
 
         Assert.Equal(expectedLanguage, language);
     }
-}
 
+
+
+
+
+
+
+
+    [Fact]
+    public void GetLanguage_ReturnsLanguageString_ForFencedCodeBlockWithLanguage()
+    {
+        FencedCodeBlock block = MarkdownTestHelper.ParseFirstBlock<FencedCodeBlock>("```csharp\ncode\n```");
+
+        var language = CodeBlockRenderer.GetLanguage(block);
+
+        Assert.Equal("csharp", language);
+    }
+
+
+
+
+
+
+
+
+    [Fact]
+    public void GetLanguage_ReturnsNull_ForFencedCodeBlockWithNoLanguage()
+    {
+        FencedCodeBlock block = MarkdownTestHelper.ParseFirstBlock<FencedCodeBlock>("```\ncode\n```");
+
+        var language = CodeBlockRenderer.GetLanguage(block);
+
+        Assert.Null(language);
+    }
+
+
+
+
+
+
+
+
+    [Fact]
+    public void GetLanguage_ReturnsNull_ForFencedCodeBlockWithWhitespaceLanguage()
+    {
+        FencedCodeBlock block = MarkdownTestHelper.ParseFirstBlock<FencedCodeBlock>("```   \ncode\n```");
+
+        var language = CodeBlockRenderer.GetLanguage(block);
+
+        Assert.Null(language);
+    }
+
+
+
+
+
+
+
+
+    [Fact]
+    public void GetLanguage_ReturnsNull_ForIndentedCodeBlock()
+    {
+        CodeBlock block = MarkdownTestHelper.ParseFirstBlock<CodeBlock>("    some code");
+
+        var language = CodeBlockRenderer.GetLanguage(block);
+
+        Assert.Null(language);
+    }
+
+
+
+
+
+
+
+
+    [StaFact]
+    public void IndentedCodeBlock_RendersDefaultLanguageLabel()
+    {
+        MarkdownEngine engine = MarkdownEngine.CreateDefault();
+
+        MarkdownRootPanel root = Assert.IsType<MarkdownRootPanel>(engine.Render("    Console.WriteLine(42);", EmptyServiceProvider.Instance));
+        CodeBlockBorder border = Assert.IsType<CodeBlockBorder>(root.Children[0]);
+        Grid grid = Assert.IsType<Grid>(border.Child);
+        CodeBlockHeaderBorder headerBorder = Assert.IsType<CodeBlockHeaderBorder>(grid.Children[0]);
+        CodeBlockHeaderPanel header = Assert.IsType<CodeBlockHeaderPanel>(headerBorder.Child);
+        CodeBlockHeaderTextBlock language = Assert.IsType<CodeBlockHeaderTextBlock>(header.Children[0]);
+
+        Assert.Equal("text", language.Text);
+    }
+}
