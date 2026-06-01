@@ -26,6 +26,7 @@
 		<Copyright>Kyle L. Crowder © 2026</Copyright>
 		<PackageIcon>app-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+	
 		<PackageReleaseNotes>See the GitHub repository for release notes.</PackageReleaseNotes>
 		<NeutralLanguage>en</NeutralLanguage>
 		

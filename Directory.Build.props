@@ -22,10 +22,11 @@
 	<PropertyGroup>
 		<!-- Visible version -->
 		<Version>2.0.$(HoursSinceYearStart)</Version>
-
+		<PackageVersion>2.0.$(HoursSinceYearStart)</PackageVersion>
 		<AssemblyVersion>2.0.$(HoursSinceYearStart).1</AssemblyVersion>
 		<FileVersion>2.0.1.$(HoursSinceYearStart)</FileVersion>
-		<PackOutputFolder>\$(ProjectName)\bin\Debug</PackOutputFolder>
+		<PackOutputFolder>$(ProjectName)\bin\Release</PackOutputFolder>
+		<PackRelease>True</PackRelease>
 	</PropertyGroup>
 
 
@@ -40,6 +41,9 @@
 		<Copy SourceFiles="@(BuildOutputFiles)" DestinationFolder="@(ReleaseCopyOutputPath)" SkipUnchangedFiles="false" />
 		<Message Text="build output copied to @(ReleaseCopyOutputPath)" Importance="High" />
 	</Target>
+
+
+
 
 	<Target Name="ReleasePackageToNuGet" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
 		<!-- <Exec Command="dotnet nuget push $(PackOutputFolder)\*.nupkg -source nuget.org" /> 	-->
