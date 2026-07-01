@@ -78,7 +78,7 @@ internal static class RenderHelpers
 
     public static TextBlock CreateTextBlock(IRenderContext context)
     {
-        return new TextBlock { TextWrapping = TextWrapping.Wrap };
+        return new TextBlock { TextWrapping = context.WordWrap ? TextWrapping.Wrap : TextWrapping.NoWrap };
     }
 
 

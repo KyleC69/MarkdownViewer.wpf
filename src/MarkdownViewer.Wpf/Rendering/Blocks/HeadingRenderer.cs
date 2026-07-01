@@ -32,14 +32,14 @@ public sealed class HeadingRenderer : IBlockRenderer<HeadingBlock>
 
         TextBlock textBlock = block.Level switch
         {
-                1 => new Heading1TextBlock { FontSize = 30, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 8, 0, 16) },
-                2 => new Heading2TextBlock { FontSize = 24, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 8, 0, 14) },
-                3 => new Heading3TextBlock { FontSize = 20, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 6, 0, 12) },
-                4 => new Heading4TextBlock { FontSize = 18, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 6, 0, 10) },
-                5 => new Heading5TextBlock { FontSize = 16, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 4, 0, 8) },
-                _ => new Heading6TextBlock { FontSize = 14, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 4, 0, 8) }
+            1 => new Heading1TextBlock { FontSize = 30, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 8, 0, 16) },
+            2 => new Heading2TextBlock { FontSize = 24, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 8, 0, 14) },
+            3 => new Heading3TextBlock { FontSize = 20, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 6, 0, 12) },
+            4 => new Heading4TextBlock { FontSize = 18, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 6, 0, 10) },
+            5 => new Heading5TextBlock { FontSize = 16, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 4, 0, 8) },
+            _ => new Heading6TextBlock { FontSize = 14, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 4, 0, 8) }
         };
-        textBlock.TextWrapping = TextWrapping.Wrap;
+        textBlock.TextWrapping = context.WordWrap ? TextWrapping.Wrap : TextWrapping.NoWrap;
         RenderHelpers.AppendInlines(textBlock.Inlines, block.Inline, context);
         return textBlock;
     }

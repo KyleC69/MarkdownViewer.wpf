@@ -69,12 +69,12 @@ public class CodeBlockRenderer : IBlockRenderer<CodeBlock>
     {
         CodeBlockBorder border = new()
         {
-                Margin = new Thickness(0, 0, 0, 12),
-                BorderThickness = new Thickness(1),
-                BorderBrush = SystemColors.ControlDarkBrush,
-                Background = SystemColors.ControlLightLightBrush,
-                CornerRadius = new CornerRadius(6),
-                SnapsToDevicePixels = true
+            Margin = new Thickness(0, 0, 0, 12),
+            BorderThickness = new Thickness(1),
+            BorderBrush = SystemColors.ControlDarkBrush,
+            Background = SystemColors.ControlLightLightBrush,
+            CornerRadius = new CornerRadius(6),
+            SnapsToDevicePixels = true
         };
 
         Grid grid = new();
@@ -85,11 +85,11 @@ public class CodeBlockRenderer : IBlockRenderer<CodeBlock>
 
         CodeBlockHeaderTextBlock headerText = new()
         {
-                Text = string.IsNullOrWhiteSpace(language) ? DefaultLanguageLabel : language,
-                VerticalAlignment = VerticalAlignment.Center,
-                FontFamily = new FontFamily("Consolas, Courier New"),
-                FontSize = 12,
-                FontWeight = FontWeights.SemiBold
+            Text = string.IsNullOrWhiteSpace(language) ? DefaultLanguageLabel : language,
+            VerticalAlignment = VerticalAlignment.Center,
+            FontFamily = new FontFamily("Consolas, Courier New"),
+            FontSize = 12,
+            FontWeight = FontWeights.SemiBold
         };
         DockPanel.SetDock(headerText, Dock.Left);
 
@@ -109,11 +109,11 @@ public class CodeBlockRenderer : IBlockRenderer<CodeBlock>
 
         CodeBlockHeaderBorder headerBorder = new()
         {
-                Child = header,
-                Background = SystemColors.ControlLightBrush,
-                BorderBrush = SystemColors.ControlDarkBrush,
-                BorderThickness = new Thickness(0, 0, 0, 1),
-                Padding = new Thickness(10, 6, 10, 6)
+            Child = header,
+            Background = SystemColors.ControlLightBrush,
+            BorderBrush = SystemColors.ControlDarkBrush,
+            BorderThickness = new Thickness(0, 0, 0, 1),
+            Padding = new Thickness(10, 6, 10, 6)
         };
         Grid.SetRow(headerBorder, 0);
         grid.Children.Add(headerBorder);

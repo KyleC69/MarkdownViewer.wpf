@@ -8,6 +8,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 using System.Windows.Threading;
 
 using MarkdownViewer.Wpf.Core;
@@ -36,6 +37,8 @@ public class MarkdownView : Control
 
     public static readonly DependencyProperty ServicesProperty = DependencyProperty.Register(nameof(Services), typeof(IServiceProvider), typeof(MarkdownView), new PropertyMetadata(EmptyServiceProvider.Instance, OnRefreshPropertyChanged));
 
+    public static readonly DependencyProperty WordWrapProperty = DependencyProperty.Register(nameof(WordWrap), typeof(bool), typeof(MarkdownView), new PropertyMetadata(true, OnRefreshPropertyChanged));
+
     public static readonly DependencyProperty RenderedContentProperty = RenderedContentPropertyKey.DependencyProperty;
 
 
@@ -47,6 +50,7 @@ public class MarkdownView : Control
 
     static MarkdownView()
     {
+        // Register the default style for the control once. Duplicate registration causes a PropertyMetadata already registered exception.
         DefaultStyleKeyProperty.OverrideMetadata(typeof(MarkdownView), new FrameworkPropertyMetadata(typeof(MarkdownView)));
     }
 
@@ -81,6 +85,31 @@ public class MarkdownView : Control
         set { this.SetValue(ThemeResourcesProperty, value); }
     }
 
+    public bool WordWrap
+    {
+        get { return (bool)this.GetValue(WordWrapProperty); }
+        set { this.SetValue(WordWrapProperty, value); }
+    }
+
+    // New properties to control scrollbars visibility
+    public static readonly DependencyProperty HorizontalScrollBarVisibilityProperty = DependencyProperty.Register(
+        nameof(HorizontalScrollBarVisibility), typeof(ScrollBarVisibility), typeof(MarkdownView), new PropertyMetadata(ScrollBarVisibility.Auto));
+
+    public static readonly DependencyProperty VerticalScrollBarVisibilityProperty = DependencyProperty.Register(
+        nameof(VerticalScrollBarVisibility), typeof(ScrollBarVisibility), typeof(MarkdownView), new PropertyMetadata(ScrollBarVisibility.Auto));
+
+    public ScrollBarVisibility HorizontalScrollBarVisibility
+    {
+        get { return (ScrollBarVisibility)this.GetValue(HorizontalScrollBarVisibilityProperty); }
+        set { this.SetValue(HorizontalScrollBarVisibilityProperty, value); }
+    }
+
+    public ScrollBarVisibility VerticalScrollBarVisibility
+    {
+        get { return (ScrollBarVisibility)this.GetValue(VerticalScrollBarVisibilityProperty); }
+        set { this.SetValue(VerticalScrollBarVisibilityProperty, value); }
+    }
+
 
 
 
@@ -110,7 +139,7 @@ public class MarkdownView : Control
             return;
         }
 
-        RenderedContent = DefaultEngine.Render(Markdown, Services ?? EmptyServiceProvider.Instance, ThemeResources);
+        RenderedContent = DefaultEngine.Render(Markdown, Services ?? EmptyServiceProvider.Instance, ThemeResources, WordWrap);
     }
 
 

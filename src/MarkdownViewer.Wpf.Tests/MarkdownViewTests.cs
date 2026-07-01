@@ -131,6 +131,28 @@ public sealed class MarkdownViewTests
 
 
     [StaFact]
+    public void ApplyingTemplate_PresentsRenderedContentInVisualTree()
+    {
+        MarkdownView view = new() { Markdown = "Hello world" };
+        DispatcherTestHelper.Drain();
+
+        view.ApplyTemplate();
+
+        Assert.NotNull(view.RenderedContent);
+
+        ContentPresenter? presenter = FindVisualChild<ContentPresenter>(view);
+        Assert.NotNull(presenter);
+        Assert.Same(view.RenderedContent, presenter.Content);
+    }
+
+
+
+
+
+
+
+
+    [StaFact]
     public void SettingMarkdownToEmptyString_RemovesRenderedContent()
     {
         MarkdownView view = new();
@@ -218,5 +240,32 @@ public sealed class MarkdownViewTests
         ParagraphTextBlock paragraph = Assert.IsType<ParagraphTextBlock>(panel.Children[0]);
 
         Assert.Equal(19d, paragraph.FontSize);
+    }
+
+
+
+
+
+
+
+
+    private static T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+    {
+        for (var childIndex = 0; childIndex < VisualTreeHelper.GetChildrenCount(parent); childIndex++)
+        {
+            DependencyObject child = VisualTreeHelper.GetChild(parent, childIndex);
+            if (child is T typedChild)
+            {
+                return typedChild;
+            }
+
+            T? nestedChild = FindVisualChild<T>(child);
+            if (nestedChild is not null)
+            {
+                return nestedChild;
+            }
+        }
+
+        return null;
     }
 }

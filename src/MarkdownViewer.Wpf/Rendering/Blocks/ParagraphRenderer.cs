@@ -29,7 +29,7 @@ public sealed class ParagraphRenderer : IBlockRenderer<ParagraphBlock>
         ArgumentNullException.ThrowIfNull(block);
         ArgumentNullException.ThrowIfNull(context);
 
-        ParagraphTextBlock textBlock = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 12) };
+        ParagraphTextBlock textBlock = new() { TextWrapping = context.WordWrap ? TextWrapping.Wrap : TextWrapping.NoWrap, Margin = new Thickness(0, 0, 0, 12) };
         RenderHelpers.AppendInlines(textBlock.Inlines, block.Inline, context);
         return textBlock;
     }

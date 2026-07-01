@@ -33,6 +33,7 @@
                       ResizeDirection="Columns" />
 
         <markdown:MarkdownView Grid.Column="2"
-                               Markdown="{Binding MarkdownText}" />
+                       Markdown="{Binding MarkdownText}"
+                       WordWrap="True" />
     </Grid>
 </Window>

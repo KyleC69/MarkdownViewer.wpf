@@ -26,6 +26,8 @@ public interface IRenderContext
 
     ResourceDictionary ThemeResources { get; }
 
+    bool WordWrap { get; }
+
 
     void AddPostProcessor(IPostProcessor processor);
 

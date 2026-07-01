@@ -31,12 +31,18 @@ internal sealed class RenderContext : IRenderContext
 
 
     public RenderContext(RendererDispatcher rendererDispatcher, ResourceDictionary themeResources, ResourceDictionary resources, IServiceProvider services, IEnumerable<IPostProcessor>? postProcessors = null)
+        : this(rendererDispatcher, themeResources, resources, services, postProcessors, wordWrap: true)
+    {
+    }
+
+    public RenderContext(RendererDispatcher rendererDispatcher, ResourceDictionary themeResources, ResourceDictionary resources, IServiceProvider services, IEnumerable<IPostProcessor>? postProcessors, bool wordWrap)
     {
         this.rendererDispatcher = rendererDispatcher ?? throw new ArgumentNullException(nameof(rendererDispatcher));
         ThemeResources = themeResources ?? throw new ArgumentNullException(nameof(themeResources));
         Resources = resources ?? throw new ArgumentNullException(nameof(resources));
         Services = services ?? throw new ArgumentNullException(nameof(services));
         this.postProcessors = postProcessors?.ToList() ?? [];
+        WordWrap = wordWrap;
     }
 
 
@@ -100,4 +106,6 @@ internal sealed class RenderContext : IRenderContext
     public IServiceProvider Services { get; }
 
     public ResourceDictionary ThemeResources { get; }
+
+    public bool WordWrap { get; }
 }

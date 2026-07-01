@@ -60,6 +60,13 @@ internal static class HtmlWpfRenderer
 
 
 
+    private static TextWrapping GetTextWrapping(IRenderContext context) => context.WordWrap ? TextWrapping.Wrap : TextWrapping.NoWrap;
+
+
+
+
+
+
     private static UIElement CreateContainer(HtmlNode node, IRenderContext context)
     {
         if (HasBlockChildren(node))
@@ -67,7 +74,7 @@ internal static class HtmlWpfRenderer
             return CreateStackPanel(node.ChildNodes, context);
         }
 
-        ParagraphTextBlock textBlock = new() { TextWrapping = TextWrapping.Wrap };
+        ParagraphTextBlock textBlock = new() { TextWrapping = GetTextWrapping(context) };
         foreach (Inline inline in RenderInlineNodes(node.ChildNodes, context))
         {
             textBlock.Inlines.Add(inline);
@@ -91,7 +98,7 @@ internal static class HtmlWpfRenderer
             return [];
         }
 
-        ParagraphTextBlock textBlock = new() { TextWrapping = TextWrapping.Wrap };
+        ParagraphTextBlock textBlock = new() { TextWrapping = GetTextWrapping(context) };
         textBlock.Text = text;
         return [textBlock];
     }
@@ -107,12 +114,12 @@ internal static class HtmlWpfRenderer
     {
         TextBlock textBlock = level switch
         {
-                1 => new Heading1TextBlock { TextWrapping = TextWrapping.Wrap },
-                2 => new Heading2TextBlock { TextWrapping = TextWrapping.Wrap },
-                3 => new Heading3TextBlock { TextWrapping = TextWrapping.Wrap },
-                4 => new Heading4TextBlock { TextWrapping = TextWrapping.Wrap },
-                5 => new Heading5TextBlock { TextWrapping = TextWrapping.Wrap },
-                _ => new Heading6TextBlock { TextWrapping = TextWrapping.Wrap }
+            1 => new Heading1TextBlock { TextWrapping = GetTextWrapping(context) },
+            2 => new Heading2TextBlock { TextWrapping = GetTextWrapping(context) },
+            3 => new Heading3TextBlock { TextWrapping = GetTextWrapping(context) },
+            4 => new Heading4TextBlock { TextWrapping = GetTextWrapping(context) },
+            5 => new Heading5TextBlock { TextWrapping = GetTextWrapping(context) },
+            _ => new Heading6TextBlock { TextWrapping = GetTextWrapping(context) }
         };
         foreach (Inline inline in RenderInlineNodes(nodes, context)) textBlock.Inlines.Add(inline);
 
@@ -301,7 +308,7 @@ internal static class HtmlWpfRenderer
 
     private static TextBlock CreateTextBlock(IEnumerable<HtmlNode> nodes, IRenderContext context)
     {
-        ParagraphTextBlock textBlock = new() { TextWrapping = TextWrapping.Wrap };
+        ParagraphTextBlock textBlock = new() { TextWrapping = GetTextWrapping(context) };
         foreach (Inline inline in RenderInlineNodes(nodes, context)) textBlock.Inlines.Add(inline);
 
         return textBlock;
@@ -401,7 +408,7 @@ internal static class HtmlWpfRenderer
 
         if (elements.Count == 0)
         {
-            return new ParagraphTextBlock { TextWrapping = TextWrapping.Wrap };
+            return new ParagraphTextBlock { TextWrapping = GetTextWrapping(context) };
         }
 
         if (elements.Count == 1)
@@ -438,7 +445,7 @@ internal static class HtmlWpfRenderer
                 return [];
             }
 
-            ParagraphTextBlock textBlock = new() { TextWrapping = TextWrapping.Wrap };
+            ParagraphTextBlock textBlock = new() { TextWrapping = GetTextWrapping(context) };
             textBlock.Text = text;
             return [textBlock];
         }
@@ -446,24 +453,24 @@ internal static class HtmlWpfRenderer
         var tagName = node.Name.ToLowerInvariant();
         return tagName switch
         {
-                "p" => [CreateTextBlock(node.ChildNodes, context)],
-                "a" => [CreateTextBlock(new[] { node }, context)],
-                "div" or "section" or "article" or "main" or "header" or "footer" or "aside" or "figure" or "details" => [CreateContainer(node, context)],
-                "h1" => [CreateHeadingTextBlock(node.ChildNodes, context, 1)],
-                "h2" => [CreateHeadingTextBlock(node.ChildNodes, context, 2)],
-                "h3" => [CreateHeadingTextBlock(node.ChildNodes, context, 3)],
-                "h4" => [CreateHeadingTextBlock(node.ChildNodes, context, 4)],
-                "h5" => [CreateHeadingTextBlock(node.ChildNodes, context, 5)],
-                "h6" => [CreateHeadingTextBlock(node.ChildNodes, context, 6)],
-                "figcaption" or "summary" => [CreateTextBlock(node.ChildNodes, context)],
-                "blockquote" => [CreateBlockQuote(node, context)],
-                "pre" => [CreatePreformattedBlock(node, context)],
-                "ul" => [CreateList(node, context, isOrdered: false)],
-                "ol" => [CreateList(node, context, isOrdered: true)],
-                "table" => [CreateTable(node, context)],
-                "img" => [CreateImage(node, context)],
-                "hr" => [CreateThematicBreak(context)],
-                _ => node.HasChildNodes ? RenderDescendantBlocks(node.ChildNodes, context) : CreateFallbackText(node, context)
+            "p" => [CreateTextBlock(node.ChildNodes, context)],
+            "a" => [CreateTextBlock(new[] { node }, context)],
+            "div" or "section" or "article" or "main" or "header" or "footer" or "aside" or "figure" or "details" => [CreateContainer(node, context)],
+            "h1" => [CreateHeadingTextBlock(node.ChildNodes, context, 1)],
+            "h2" => [CreateHeadingTextBlock(node.ChildNodes, context, 2)],
+            "h3" => [CreateHeadingTextBlock(node.ChildNodes, context, 3)],
+            "h4" => [CreateHeadingTextBlock(node.ChildNodes, context, 4)],
+            "h5" => [CreateHeadingTextBlock(node.ChildNodes, context, 5)],
+            "h6" => [CreateHeadingTextBlock(node.ChildNodes, context, 6)],
+            "figcaption" or "summary" => [CreateTextBlock(node.ChildNodes, context)],
+            "blockquote" => [CreateBlockQuote(node, context)],
+            "pre" => [CreatePreformattedBlock(node, context)],
+            "ul" => [CreateList(node, context, isOrdered: false)],
+            "ol" => [CreateList(node, context, isOrdered: true)],
+            "table" => [CreateTable(node, context)],
+            "img" => [CreateImage(node, context)],
+            "hr" => [CreateThematicBreak(context)],
+            _ => node.HasChildNodes ? RenderDescendantBlocks(node.ChildNodes, context) : CreateFallbackText(node, context)
         };
     }
 
@@ -570,50 +577,50 @@ internal static class HtmlWpfRenderer
                 yield return codeSpan;
                 yield break;
             case "mark":
-            {
-                MarkedSpan span = new();
-                foreach (HtmlNode child in node.ChildNodes)
                 {
-                    foreach (Inline inline in RenderInlineNode(child, context)) span.Inlines.Add(inline);
-                }
+                    MarkedSpan span = new();
+                    foreach (HtmlNode child in node.ChildNodes)
+                    {
+                        foreach (Inline inline in RenderInlineNode(child, context)) span.Inlines.Add(inline);
+                    }
 
-                yield return span;
-            }
+                    yield return span;
+                }
                 yield break;
             case "del":
             case "strike":
             case "s":
-            {
-                StrikeThroughSpan span = new();
-                foreach (HtmlNode child in node.ChildNodes)
                 {
-                    foreach (Inline inline in RenderInlineNode(child, context)) span.Inlines.Add(inline);
-                }
+                    StrikeThroughSpan span = new();
+                    foreach (HtmlNode child in node.ChildNodes)
+                    {
+                        foreach (Inline inline in RenderInlineNode(child, context)) span.Inlines.Add(inline);
+                    }
 
-                yield return span;
-            }
+                    yield return span;
+                }
                 yield break;
             case "sup":
-            {
-                SuperscriptSpan span = new();
-                foreach (HtmlNode child in node.ChildNodes)
                 {
-                    foreach (Inline inline in RenderInlineNode(child, context)) span.Inlines.Add(inline);
-                }
+                    SuperscriptSpan span = new();
+                    foreach (HtmlNode child in node.ChildNodes)
+                    {
+                        foreach (Inline inline in RenderInlineNode(child, context)) span.Inlines.Add(inline);
+                    }
 
-                yield return span;
-            }
+                    yield return span;
+                }
                 yield break;
             case "sub":
-            {
-                SubscriptSpan span = new();
-                foreach (HtmlNode child in node.ChildNodes)
                 {
-                    foreach (Inline inline in RenderInlineNode(child, context)) span.Inlines.Add(inline);
-                }
+                    SubscriptSpan span = new();
+                    foreach (HtmlNode child in node.ChildNodes)
+                    {
+                        foreach (Inline inline in RenderInlineNode(child, context)) span.Inlines.Add(inline);
+                    }
 
-                yield return span;
-            }
+                    yield return span;
+                }
                 yield break;
             case "a":
                 yield return CreateHyperlink(node, context);

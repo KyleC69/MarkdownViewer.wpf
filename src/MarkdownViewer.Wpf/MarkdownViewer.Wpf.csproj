@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<AssemblyName>MarkdownViewer.Wpf</AssemblyName>
 		<RootNamespace>MarkdownViewer.Wpf</RootNamespace>
-		<TargetFramework>net9.0-windows</TargetFramework>
+		<TargetFramework>net10.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -26,10 +26,10 @@
 		<Copyright>Kyle L. Crowder © 2026</Copyright>
 		<PackageIcon>app-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-	
+
 		<PackageReleaseNotes>See the GitHub repository for release notes.</PackageReleaseNotes>
 		<NeutralLanguage>en</NeutralLanguage>
-		
+
 	</PropertyGroup>
 
 

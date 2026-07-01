@@ -109,6 +109,11 @@ public sealed class MarkdownEngine
 
     public UIElement Render(string markdown, IServiceProvider services, ResourceDictionary? themeResources = null)
     {
+        return Render(markdown, services, themeResources, wordWrap: true);
+    }
+
+    public UIElement Render(string markdown, IServiceProvider services, ResourceDictionary? themeResources, bool wordWrap)
+    {
         ArgumentNullException.ThrowIfNull(markdown);
         ArgumentNullException.ThrowIfNull(services);
 
@@ -119,7 +124,7 @@ public sealed class MarkdownEngine
 
         MarkdownRootPanel root = new() { Resources = scopedResources };
 
-        RenderContext context = new(dispatcher, effectiveThemeResources, scopedResources, services, postProcessors);
+        RenderContext context = new(dispatcher, effectiveThemeResources, scopedResources, services, postProcessors, wordWrap);
         foreach (Block block in document)
         {
             root.Children.Add(context.RenderBlock(block));
