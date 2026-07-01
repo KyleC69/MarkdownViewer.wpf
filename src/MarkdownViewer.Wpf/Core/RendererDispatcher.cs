@@ -89,7 +89,7 @@ public sealed class RendererDispatcher
         Stopwatch stopwatch = Stopwatch.StartNew();
         UIElement result = ((dynamic)renderer).Render((dynamic)block, context);
         stopwatch.Stop();
-        MarkdownDiagnostics.ReportNodeRendered(block.GetType(), stopwatch.Elapsed, isBlock: true);
+      //  MarkdownDiagnostics.ReportNodeRendered(block.GetType(), stopwatch.Elapsed, isBlock: true);
         return result;
     }
 
@@ -113,7 +113,7 @@ public sealed class RendererDispatcher
         Stopwatch stopwatch = Stopwatch.StartNew();
         Inline result = ((dynamic)renderer).Render((dynamic)inline, context);
         stopwatch.Stop();
-        MarkdownDiagnostics.ReportNodeRendered(inline.GetType(), stopwatch.Elapsed, isBlock: false);
+       // MarkdownDiagnostics.ReportNodeRendered(inline.GetType(), stopwatch.Elapsed, isBlock: false);
         return result;
     }
 }

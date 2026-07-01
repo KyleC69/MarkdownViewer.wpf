@@ -28,7 +28,7 @@
 
 ## Requirements
 
-- .NET 9
+- .NET 10
 - WPF on Windows
 
 ## Installation
